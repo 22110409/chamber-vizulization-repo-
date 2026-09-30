@@ -1,0 +1,9 @@
+matplotlib>=3.7
+numpy>=1.23
+pandas>=1.5
+openpyxl>=3.0
+pillow>=9.0
+arabic-reshaper>=3.0
+python-bidi>=0.4.2
+# optional, for the upload app:
+streamlit>=1.30

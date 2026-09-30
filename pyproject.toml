@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chamberviz"
+version = "1.0.0"
+description = "Branded charts in one line (bar, pie, line, maps, flows...) with flags, icons and your logo, plus automatic chart suggestions from Excel files."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "matplotlib>=3.7",
+    "numpy>=1.23",
+    "pandas>=1.5",
+    "openpyxl>=3.0",
+    "pillow>=9.0",
+    "arabic-reshaper>=3.0",
+    "python-bidi>=0.4.2",
+]
+
+[project.optional-dependencies]
+app = ["streamlit>=1.30"]
+
+[project.scripts]
+chamberviz = "chamberviz.__main__:main"
+
+[tool.setuptools]
+packages = ["chamberviz"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+chamberviz = ["assets/*.json", "assets/fonts/*", "assets/icons/*", "assets/maps/*",
+              "assets/flags/round/*", "assets/flags/rect/*", "assets/logos/*", "assets/backgrounds/*"]

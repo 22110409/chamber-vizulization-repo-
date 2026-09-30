@@ -1,0 +1,2787 @@
+{
+"AF": {
+"iso2": "AF",
+"en": "Afghanistan",
+"ar": "أفغانستان",
+"iso3": "AFG",
+"lon": 66.497,
+"lat": 34.164,
+"aliases": [
+"Islamic State of Afghanistan"
+]
+},
+"AX": {
+"iso2": "AX",
+"en": "Åland Islands",
+"ar": "جزر آلاند",
+"iso3": "ALA",
+"lon": 19.87,
+"lat": 60.156,
+"aliases": [
+"Åland",
+"جزر أولاند",
+"Aland"
+]
+},
+"AL": {
+"iso2": "AL",
+"en": "Albania",
+"ar": "ألبانيا",
+"iso3": "ALB",
+"lon": 20.114,
+"lat": 40.655,
+"aliases": [
+"Republic of Albania"
+]
+},
+"DZ": {
+"iso2": "DZ",
+"en": "Algeria",
+"ar": "الجزائر",
+"iso3": "DZA",
+"lon": 2.808,
+"lat": 27.397,
+"aliases": [
+"People's Democratic Republic of Algeria"
+]
+},
+"AS": {
+"iso2": "AS",
+"en": "American Samoa",
+"ar": "ساموا الأمريكية",
+"iso3": "ASM",
+"lon": -170.747,
+"lat": -14.327,
+"aliases": []
+},
+"AD": {
+"iso2": "AD",
+"en": "Andorra",
+"ar": "أندورا",
+"iso3": "AND",
+"lon": 1.539,
+"lat": 42.548,
+"aliases": [
+"Principality of Andorra"
+]
+},
+"AO": {
+"iso2": "AO",
+"en": "Angola",
+"ar": "أنغولا",
+"iso3": "AGO",
+"lon": 17.984,
+"lat": -12.183,
+"aliases": [
+"People's Republic of Angola"
+]
+},
+"AI": {
+"iso2": "AI",
+"en": "Anguilla",
+"ar": "أنغويلا",
+"iso3": "AIA",
+"lon": -63.026,
+"lat": 18.243,
+"aliases": []
+},
+"AQ": {
+"iso2": "AQ",
+"en": "Antarctica",
+"ar": "أنتاركتيكا",
+"iso3": "ATA",
+"lon": 35.885,
+"lat": -79.843,
+"aliases": [
+"القارة القطبية الجنوبية"
+]
+},
+"AG": {
+"iso2": "AG",
+"en": "Antigua & Barbuda",
+"ar": "أنتيغوا وبربودا",
+"iso3": "ATG",
+"lon": -61.791,
+"lat": 17.352,
+"aliases": [
+"Antigua and Barb.",
+"Antigua and Barbuda",
+"أنتيغوا وباربودا"
+]
+},
+"AR": {
+"iso2": "AR",
+"en": "Argentina",
+"ar": "الأرجنتين",
+"iso3": "ARG",
+"lon": -64.173,
+"lat": -33.501,
+"aliases": [
+"Argentine Republic"
+]
+},
+"AM": {
+"iso2": "AM",
+"en": "Armenia",
+"ar": "أرمينيا",
+"iso3": "ARM",
+"lon": 44.801,
+"lat": 40.459,
+"aliases": [
+"Republic of Armenia"
+]
+},
+"AW": {
+"iso2": "AW",
+"en": "Aruba",
+"ar": "أروبا",
+"iso3": "ABW",
+"lon": -69.973,
+"lat": 12.517,
+"aliases": []
+},
+"AU": {
+"iso2": "AU",
+"en": "Australia",
+"ar": "أستراليا",
+"iso3": "ATC",
+"lon": 123.586,
+"lat": -12.433,
+"aliases": [
+"Commonwealth of Australia",
+"Indian Ocean Ter.",
+"Indian Ocean Territories",
+"أقاليم المحيط الهندي الأسترالية",
+"Ashmore and Cartier Is.",
+"Ashmore and Cartier Islands",
+"Territory of Ashmore and Cartier Islands",
+"جزر أشمور وكارتيير"
+]
+},
+"AT": {
+"iso2": "AT",
+"en": "Austria",
+"ar": "النمسا",
+"iso3": "AUT",
+"lon": 14.131,
+"lat": 47.519,
+"aliases": [
+"Republic of Austria"
+]
+},
+"AZ": {
+"iso2": "AZ",
+"en": "Azerbaijan",
+"ar": "أذربيجان",
+"iso3": "AZE",
+"lon": 47.211,
+"lat": 40.402,
+"aliases": [
+"Republic of Azerbaijan"
+]
+},
+"BS": {
+"iso2": "BS",
+"en": "Bahamas",
+"ar": "جزر البهاما",
+"iso3": "BHS",
+"lon": -77.147,
+"lat": 26.402,
+"aliases": [
+"Commonwealth of the Bahamas",
+"باهاماس",
+"The Bahamas",
+"Bahamas, The"
+]
+},
+"BH": {
+"iso2": "BH",
+"en": "Bahrain",
+"ar": "البحرين",
+"iso3": "BHR",
+"lon": 50.555,
+"lat": 26.056,
+"aliases": [
+"Kingdom of Bahrain"
+]
+},
+"BD": {
+"iso2": "BD",
+"en": "Bangladesh",
+"ar": "بنغلاديش",
+"iso3": "BGD",
+"lon": 89.685,
+"lat": 24.215,
+"aliases": [
+"People's Republic of Bangladesh"
+]
+},
+"BB": {
+"iso2": "BB",
+"en": "Barbados",
+"ar": "بربادوس",
+"iso3": "BRB",
+"lon": -59.569,
+"lat": 13.164,
+"aliases": [
+"باربادوس"
+]
+},
+"BY": {
+"iso2": "BY",
+"en": "Belarus",
+"ar": "بيلاروس",
+"iso3": "BLR",
+"lon": 28.418,
+"lat": 53.822,
+"aliases": [
+"Republic of Belarus",
+"بيلاروسيا"
+]
+},
+"BE": {
+"iso2": "BE",
+"en": "Belgium",
+"ar": "بلجيكا",
+"iso3": "BEL",
+"lon": 4.8,
+"lat": 50.785,
+"aliases": [
+"Kingdom of Belgium"
+]
+},
+"BZ": {
+"iso2": "BZ",
+"en": "Belize",
+"ar": "بليز",
+"iso3": "BLZ",
+"lon": -88.713,
+"lat": 17.202,
+"aliases": []
+},
+"BJ": {
+"iso2": "BJ",
+"en": "Benin",
+"ar": "بنين",
+"iso3": "BEN",
+"lon": 2.352,
+"lat": 10.325,
+"aliases": [
+"Republic of Benin"
+]
+},
+"BM": {
+"iso2": "BM",
+"en": "Bermuda",
+"ar": "برمودا",
+"iso3": "BMU",
+"lon": -64.764,
+"lat": 32.297,
+"aliases": [
+"The Bermudas or Somers Isles"
+]
+},
+"BT": {
+"iso2": "BT",
+"en": "Bhutan",
+"ar": "بوتان",
+"iso3": "BTN",
+"lon": 90.04,
+"lat": 27.537,
+"aliases": [
+"Kingdom of Bhutan"
+]
+},
+"BO": {
+"iso2": "BO",
+"en": "Bolivia",
+"ar": "بوليفيا",
+"iso3": "BOL",
+"lon": -64.593,
+"lat": -16.666,
+"aliases": [
+"Plurinational State of Bolivia"
+]
+},
+"BA": {
+"iso2": "BA",
+"en": "Bosnia & Herzegovina",
+"ar": "البوسنة والهرسك",
+"iso3": "BIH",
+"lon": 18.068,
+"lat": 44.091,
+"aliases": [
+"Bosnia and Herz.",
+"Bosnia and Herzegovina"
+]
+},
+"BW": {
+"iso2": "BW",
+"en": "Botswana",
+"ar": "بوتسوانا",
+"iso3": "BWA",
+"lon": 24.179,
+"lat": -22.103,
+"aliases": [
+"Republic of Botswana"
+]
+},
+"BV": {
+"iso2": "BV",
+"en": "Bouvet Island",
+"ar": "جزيرة بوفيه",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"BR": {
+"iso2": "BR",
+"en": "Brazil",
+"ar": "البرازيل",
+"iso3": "BRA",
+"lon": -49.559,
+"lat": -12.099,
+"aliases": [
+"Federative Republic of Brazil"
+]
+},
+"IO": {
+"iso2": "IO",
+"en": "British Indian Ocean Territory",
+"ar": "الإقليم البريطاني في المحيط الهندي",
+"iso3": "IOT",
+"lon": 71.348,
+"lat": -6.191,
+"aliases": [
+"Br. Indian Ocean Ter.",
+"إقليم المحيط الهندي البريطاني"
+]
+},
+"VG": {
+"iso2": "VG",
+"en": "British Virgin Islands",
+"ar": "جزر فيرجن البريطانية",
+"iso3": "VGB",
+"lon": -64.637,
+"lat": 18.427,
+"aliases": [
+"British Virgin Is.",
+"جزر العذراء البريطانية"
+]
+},
+"BN": {
+"iso2": "BN",
+"en": "Brunei",
+"ar": "بروناي",
+"iso3": "BRN",
+"lon": 114.552,
+"lat": 4.448,
+"aliases": [
+"Brunei Darussalam",
+"Negara Brunei Darussalam"
+]
+},
+"BG": {
+"iso2": "BG",
+"en": "Bulgaria",
+"ar": "بلغاريا",
+"iso3": "BGR",
+"lon": 25.157,
+"lat": 42.509,
+"aliases": [
+"Republic of Bulgaria"
+]
+},
+"BF": {
+"iso2": "BF",
+"en": "Burkina Faso",
+"ar": "بوركينا فاسو",
+"iso3": "BFA",
+"lon": -1.364,
+"lat": 12.673,
+"aliases": []
+},
+"BI": {
+"iso2": "BI",
+"en": "Burundi",
+"ar": "بوروندي",
+"iso3": "BDI",
+"lon": 29.917,
+"lat": -3.333,
+"aliases": [
+"Republic of Burundi"
+]
+},
+"KH": {
+"iso2": "KH",
+"en": "Cambodia",
+"ar": "كمبوديا",
+"iso3": "KHM",
+"lon": 104.505,
+"lat": 12.648,
+"aliases": [
+"Kingdom of Cambodia"
+]
+},
+"CM": {
+"iso2": "CM",
+"en": "Cameroon",
+"ar": "الكاميرون",
+"iso3": "CMR",
+"lon": 12.473,
+"lat": 4.585,
+"aliases": [
+"Republic of Cameroon"
+]
+},
+"CA": {
+"iso2": "CA",
+"en": "Canada",
+"ar": "كندا",
+"iso3": "CAN",
+"lon": -101.911,
+"lat": 60.324,
+"aliases": []
+},
+"CV": {
+"iso2": "CV",
+"en": "Cape Verde",
+"ar": "الرأس الأخضر",
+"iso3": "CPV",
+"lon": -23.639,
+"lat": 15.075,
+"aliases": [
+"Cabo Verde",
+"Republic of Cabo Verde"
+]
+},
+"BQ": {
+"iso2": "BQ",
+"en": "Caribbean Netherlands",
+"ar": "هولندا الكاريبية",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"KY": {
+"iso2": "KY",
+"en": "Cayman Islands",
+"ar": "جزر كايمان",
+"iso3": "CYM",
+"lon": -81.241,
+"lat": 19.32,
+"aliases": [
+"Cayman Is."
+]
+},
+"CF": {
+"iso2": "CF",
+"en": "Central African Republic",
+"ar": "جمهورية أفريقيا الوسطى",
+"iso3": "CAF",
+"lon": 20.907,
+"lat": 6.99,
+"aliases": [
+"Central African Rep."
+]
+},
+"TD": {
+"iso2": "TD",
+"en": "Chad",
+"ar": "تشاد",
+"iso3": "TCD",
+"lon": 18.645,
+"lat": 15.143,
+"aliases": [
+"Republic of Chad"
+]
+},
+"CL": {
+"iso2": "CL",
+"en": "Chile",
+"ar": "تشيلي",
+"iso3": "CHL",
+"lon": -72.319,
+"lat": -38.152,
+"aliases": [
+"Republic of Chile"
+]
+},
+"CN": {
+"iso2": "CN",
+"en": "China",
+"ar": "الصين",
+"iso3": "CHN",
+"lon": 106.337,
+"lat": 32.498,
+"aliases": [
+"People's Republic of China"
+]
+},
+"CX": {
+"iso2": "CX",
+"en": "Christmas Island",
+"ar": "جزيرة كريسماس",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"CC": {
+"iso2": "CC",
+"en": "Cocos (Keeling) Islands",
+"ar": "جزر كوكوس (كيلينغ)",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"CO": {
+"iso2": "CO",
+"en": "Colombia",
+"ar": "كولومبيا",
+"iso3": "COL",
+"lon": -73.174,
+"lat": 3.373,
+"aliases": [
+"Republic of Colombia"
+]
+},
+"KM": {
+"iso2": "KM",
+"en": "Comoros",
+"ar": "جزر القمر",
+"iso3": "COM",
+"lon": 43.318,
+"lat": -11.728,
+"aliases": [
+"Union of the Comoros"
+]
+},
+"CG": {
+"iso2": "CG",
+"en": "Congo - Brazzaville",
+"ar": "الكونغو - برازافيل",
+"iso3": "COG",
+"lon": 15.9,
+"lat": 0.142,
+"aliases": [
+"Congo",
+"Republic of the Congo",
+"جمهورية الكونغو",
+"Congo, Rep."
+]
+},
+"CD": {
+"iso2": "CD",
+"en": "Congo - Kinshasa",
+"ar": "الكونغو - كينشاسا",
+"iso3": "COD",
+"lon": 23.459,
+"lat": -1.858,
+"aliases": [
+"Dem. Rep. Congo",
+"Democratic Republic of the Congo",
+"جمهورية الكونغو الديمقراطية",
+"Congo, Dem. Rep."
+]
+},
+"CK": {
+"iso2": "CK",
+"en": "Cook Islands",
+"ar": "جزر كوك",
+"iso3": "COK",
+"lon": -159.786,
+"lat": -21.216,
+"aliases": [
+"Cook Is."
+]
+},
+"CR": {
+"iso2": "CR",
+"en": "Costa Rica",
+"ar": "كوستاريكا",
+"iso3": "CRI",
+"lon": -84.078,
+"lat": 10.065,
+"aliases": [
+"Republic of Costa Rica"
+]
+},
+"CI": {
+"iso2": "CI",
+"en": "Côte d’Ivoire",
+"ar": "ساحل العاج",
+"iso3": "CIV",
+"lon": -5.569,
+"lat": 7.491,
+"aliases": [
+"Côte d'Ivoire",
+"Republic of Ivory Coast",
+"Ivory Coast"
+]
+},
+"HR": {
+"iso2": "HR",
+"en": "Croatia",
+"ar": "كرواتيا",
+"iso3": "HRV",
+"lon": 16.372,
+"lat": 45.806,
+"aliases": [
+"Republic of Croatia"
+]
+},
+"CU": {
+"iso2": "CU",
+"en": "Cuba",
+"ar": "كوبا",
+"iso3": "CUB",
+"lon": -77.976,
+"lat": 21.334,
+"aliases": [
+"Republic of Cuba"
+]
+},
+"CW": {
+"iso2": "CW",
+"en": "Curaçao",
+"ar": "كوراساو",
+"iso3": "CUW",
+"lon": -68.921,
+"lat": 12.145,
+"aliases": []
+},
+"CY": {
+"iso2": "CY",
+"en": "Cyprus",
+"ar": "قبرص",
+"iso3": "CYP",
+"lon": 33.084,
+"lat": 34.913,
+"aliases": [
+"Republic of Cyprus"
+]
+},
+"CZ": {
+"iso2": "CZ",
+"en": "Czechia",
+"ar": "التشيك",
+"iso3": "CZE",
+"lon": 15.378,
+"lat": 49.882,
+"aliases": [
+"Czech Republic"
+]
+},
+"DK": {
+"iso2": "DK",
+"en": "Denmark",
+"ar": "الدانمرك",
+"iso3": "DNK",
+"lon": 9.018,
+"lat": 55.967,
+"aliases": [
+"Kingdom of Denmark",
+"الدنمارك"
+]
+},
+"DJ": {
+"iso2": "DJ",
+"en": "Djibouti",
+"ar": "جيبوتي",
+"iso3": "DJI",
+"lon": 42.499,
+"lat": 11.976,
+"aliases": [
+"Republic of Djibouti"
+]
+},
+"DM": {
+"iso2": "DM",
+"en": "Dominica",
+"ar": "دومينيكا",
+"iso3": "DMA",
+"lon": -61.345,
+"lat": 15.459,
+"aliases": [
+"Commonwealth of Dominica"
+]
+},
+"DO": {
+"iso2": "DO",
+"en": "Dominican Republic",
+"ar": "جمهورية الدومينيكان",
+"iso3": "DOM",
+"lon": -70.654,
+"lat": 19.104,
+"aliases": [
+"Dominican Rep."
+]
+},
+"EC": {
+"iso2": "EC",
+"en": "Ecuador",
+"ar": "الإكوادور",
+"iso3": "ECU",
+"lon": -78.188,
+"lat": -1.259,
+"aliases": [
+"Republic of Ecuador"
+]
+},
+"EG": {
+"iso2": "EG",
+"en": "Egypt",
+"ar": "مصر",
+"iso3": "EGY",
+"lon": 29.446,
+"lat": 26.186,
+"aliases": [
+"Arab Republic of Egypt",
+"Egypt, Arab Rep."
+]
+},
+"SV": {
+"iso2": "SV",
+"en": "El Salvador",
+"ar": "السلفادور",
+"iso3": "SLV",
+"lon": -88.89,
+"lat": 13.685,
+"aliases": [
+"Republic of El Salvador"
+]
+},
+"GQ": {
+"iso2": "GQ",
+"en": "Equatorial Guinea",
+"ar": "غينيا الاستوائية",
+"iso3": "GNQ",
+"lon": 8.99,
+"lat": 2.333,
+"aliases": [
+"Eq. Guinea",
+"Republic of Equatorial Guinea"
+]
+},
+"ER": {
+"iso2": "ER",
+"en": "Eritrea",
+"ar": "إريتريا",
+"iso3": "ERI",
+"lon": 38.286,
+"lat": 15.787,
+"aliases": [
+"State of Eritrea"
+]
+},
+"EE": {
+"iso2": "EE",
+"en": "Estonia",
+"ar": "إستونيا",
+"iso3": "EST",
+"lon": 25.867,
+"lat": 58.725,
+"aliases": [
+"Republic of Estonia"
+]
+},
+"SZ": {
+"iso2": "SZ",
+"en": "Eswatini",
+"ar": "إسواتيني",
+"iso3": "SWZ",
+"lon": 31.467,
+"lat": -26.534,
+"aliases": [
+"eSwatini",
+"Kingdom of eSwatini"
+]
+},
+"ET": {
+"iso2": "ET",
+"en": "Ethiopia",
+"ar": "إثيوبيا",
+"iso3": "ETH",
+"lon": 39.089,
+"lat": 8.033,
+"aliases": [
+"Federal Democratic Republic of Ethiopia"
+]
+},
+"FK": {
+"iso2": "FK",
+"en": "Falkland Islands",
+"ar": "جزر فوكلاند",
+"iso3": "FLK",
+"lon": -58.739,
+"lat": -51.609,
+"aliases": [
+"Falkland Is.",
+"Falkland Islands / Malvinas"
+]
+},
+"FO": {
+"iso2": "FO",
+"en": "Faroe Islands",
+"ar": "جزر فارو",
+"iso3": "FRO",
+"lon": -7.058,
+"lat": 62.186,
+"aliases": [
+"Faeroe Is.",
+"Faeroe Islands",
+"Føroyar Is. (Faeroe Is.)"
+]
+},
+"FJ": {
+"iso2": "FJ",
+"en": "Fiji",
+"ar": "فيجي",
+"iso3": "FJI",
+"lon": 177.975,
+"lat": -17.826,
+"aliases": [
+"Republic of Fiji"
+]
+},
+"FI": {
+"iso2": "FI",
+"en": "Finland",
+"ar": "فنلندا",
+"iso3": "FIN",
+"lon": 27.276,
+"lat": 63.252,
+"aliases": [
+"Republic of Finland"
+]
+},
+"FR": {
+"iso2": "FR",
+"en": "France",
+"ar": "فرنسا",
+"iso3": "FRA",
+"lon": 2.552,
+"lat": 46.696,
+"aliases": [
+"French Republic"
+]
+},
+"GF": {
+"iso2": "GF",
+"en": "French Guiana",
+"ar": "غويانا الفرنسية",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"PF": {
+"iso2": "PF",
+"en": "French Polynesia",
+"ar": "بولينيزيا الفرنسية",
+"iso3": "PYF",
+"lon": -149.462,
+"lat": -17.628,
+"aliases": [
+"Fr. Polynesia",
+"بولينزيا الفرنسية"
+]
+},
+"TF": {
+"iso2": "TF",
+"en": "French Southern Territories",
+"ar": "الأقاليم الجنوبية الفرنسية",
+"iso3": "ATF",
+"lon": 69.122,
+"lat": -49.304,
+"aliases": [
+"Fr. S. Antarctic Lands",
+"French Southern and Antarctic Lands",
+"Territory of the French Southern and Antarctic Lands",
+"أراض فرنسية جنوبية وأنتارتيكية",
+"Fr. S. and Antarctic Lands"
+]
+},
+"GA": {
+"iso2": "GA",
+"en": "Gabon",
+"ar": "الغابون",
+"iso3": "GAB",
+"lon": 11.836,
+"lat": -0.438,
+"aliases": [
+"Gabonese Republic"
+]
+},
+"GM": {
+"iso2": "GM",
+"en": "Gambia",
+"ar": "غامبيا",
+"iso3": "GMB",
+"lon": -14.998,
+"lat": 13.642,
+"aliases": [
+"The Gambia",
+"Republic of the Gambia",
+"Gambia, The"
+]
+},
+"GE": {
+"iso2": "GE",
+"en": "Georgia",
+"ar": "جورجيا",
+"iso3": "GEO",
+"lon": 43.736,
+"lat": 41.87,
+"aliases": []
+},
+"DE": {
+"iso2": "DE",
+"en": "Germany",
+"ar": "ألمانيا",
+"iso3": "DEU",
+"lon": 9.678,
+"lat": 50.962,
+"aliases": [
+"Federal Republic of Germany"
+]
+},
+"GH": {
+"iso2": "GH",
+"en": "Ghana",
+"ar": "غانا",
+"iso3": "GHA",
+"lon": -1.037,
+"lat": 7.718,
+"aliases": [
+"Republic of Ghana"
+]
+},
+"GI": {
+"iso2": "GI",
+"en": "Gibraltar",
+"ar": "جبل طارق",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"GR": {
+"iso2": "GR",
+"en": "Greece",
+"ar": "اليونان",
+"iso3": "GRC",
+"lon": 21.726,
+"lat": 39.493,
+"aliases": [
+"Hellenic Republic"
+]
+},
+"GL": {
+"iso2": "GL",
+"en": "Greenland",
+"ar": "غرينلاند",
+"iso3": "GRL",
+"lon": -39.335,
+"lat": 74.319,
+"aliases": [
+"جرينلاند"
+]
+},
+"GD": {
+"iso2": "GD",
+"en": "Grenada",
+"ar": "غرينادا",
+"iso3": "GRD",
+"lon": -61.68,
+"lat": 12.113,
+"aliases": []
+},
+"GP": {
+"iso2": "GP",
+"en": "Guadeloupe",
+"ar": "غوادلوب",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"GU": {
+"iso2": "GU",
+"en": "Guam",
+"ar": "غوام",
+"iso3": "GUM",
+"lon": 144.704,
+"lat": 13.354,
+"aliases": [
+"Territory of Guam"
+]
+},
+"GT": {
+"iso2": "GT",
+"en": "Guatemala",
+"ar": "غواتيمالا",
+"iso3": "GTM",
+"lon": -90.497,
+"lat": 14.982,
+"aliases": [
+"Republic of Guatemala"
+]
+},
+"GG": {
+"iso2": "GG",
+"en": "Guernsey",
+"ar": "غيرنزي",
+"iso3": "GGY",
+"lon": -2.562,
+"lat": 49.464,
+"aliases": [
+"Bailiwick of Guernsey"
+]
+},
+"GN": {
+"iso2": "GN",
+"en": "Guinea",
+"ar": "غينيا",
+"iso3": "GIN",
+"lon": -10.016,
+"lat": 10.619,
+"aliases": [
+"Republic of Guinea"
+]
+},
+"GW": {
+"iso2": "GW",
+"en": "Guinea-Bissau",
+"ar": "غينيا بيساو",
+"iso3": "GNB",
+"lon": -14.524,
+"lat": 12.164,
+"aliases": [
+"Republic of Guinea-Bissau"
+]
+},
+"GY": {
+"iso2": "GY",
+"en": "Guyana",
+"ar": "غيانا",
+"iso3": "GUY",
+"lon": -58.943,
+"lat": 5.124,
+"aliases": [
+"Co-operative Republic of Guyana"
+]
+},
+"HT": {
+"iso2": "HT",
+"en": "Haiti",
+"ar": "هايتي",
+"iso3": "HTI",
+"lon": -72.224,
+"lat": 19.264,
+"aliases": [
+"Republic of Haiti"
+]
+},
+"HM": {
+"iso2": "HM",
+"en": "Heard & McDonald Islands",
+"ar": "جزيرة هيرد وجزر ماكدونالد",
+"iso3": "HMD",
+"lon": 73.505,
+"lat": -53.103,
+"aliases": [
+"Heard I. and McDonald Is.",
+"Heard I. and McDonald Islands",
+"Territory of Heard Island and McDonald Islands",
+"Heard Island and McDonald Islands"
+]
+},
+"HN": {
+"iso2": "HN",
+"en": "Honduras",
+"ar": "هندوراس",
+"iso3": "HND",
+"lon": -86.888,
+"lat": 14.795,
+"aliases": [
+"Republic of Honduras"
+]
+},
+"HK": {
+"iso2": "HK",
+"en": "Hong Kong SAR China",
+"ar": "هونغ كونغ الصينية (منطقة إدارية خاصة)",
+"iso3": "HKG",
+"lon": 114.098,
+"lat": 22.449,
+"aliases": [
+"Hong Kong",
+"Hong Kong Special Administrative Region, PRC",
+"هونغ كونغ",
+"Hong Kong S.A.R.",
+"Hong Kong SAR, China"
+]
+},
+"HU": {
+"iso2": "HU",
+"en": "Hungary",
+"ar": "هنغاريا",
+"iso3": "HUN",
+"lon": 19.448,
+"lat": 47.087,
+"aliases": [
+"Republic of Hungary",
+"المجر"
+]
+},
+"IS": {
+"iso2": "IS",
+"en": "Iceland",
+"ar": "آيسلندا",
+"iso3": "ISL",
+"lon": -18.674,
+"lat": 64.779,
+"aliases": [
+"Republic of Iceland"
+]
+},
+"IN": {
+"iso2": "IN",
+"en": "India",
+"ar": "الهند",
+"iso3": "IND",
+"lon": 79.358,
+"lat": 22.687,
+"aliases": [
+"Republic of India"
+]
+},
+"ID": {
+"iso2": "ID",
+"en": "Indonesia",
+"ar": "إندونيسيا",
+"iso3": "IDN",
+"lon": 101.893,
+"lat": -0.954,
+"aliases": [
+"Republic of Indonesia"
+]
+},
+"IR": {
+"iso2": "IR",
+"en": "Iran",
+"ar": "إيران",
+"iso3": "IRN",
+"lon": 54.931,
+"lat": 32.166,
+"aliases": [
+"Islamic Republic of Iran",
+"Iran, Islamic Rep."
+]
+},
+"IQ": {
+"iso2": "IQ",
+"en": "Iraq",
+"ar": "العراق",
+"iso3": "IRQ",
+"lon": 43.262,
+"lat": 33.094,
+"aliases": [
+"Republic of Iraq"
+]
+},
+"IE": {
+"iso2": "IE",
+"en": "Ireland",
+"ar": "أيرلندا",
+"iso3": "IRL",
+"lon": -7.799,
+"lat": 53.079,
+"aliases": [
+"جمهورية أيرلندا"
+]
+},
+"IM": {
+"iso2": "IM",
+"en": "Isle of Man",
+"ar": "جزيرة مان",
+"iso3": "IMN",
+"lon": -4.53,
+"lat": 54.221,
+"aliases": []
+},
+"IL": {
+"iso2": "IL",
+"en": "Israel",
+"ar": "إسرائيل",
+"iso3": "ISR",
+"lon": 34.848,
+"lat": 30.911,
+"aliases": [
+"State of Israel"
+]
+},
+"IT": {
+"iso2": "IT",
+"en": "Italy",
+"ar": "إيطاليا",
+"iso3": "ITA",
+"lon": 11.077,
+"lat": 44.732,
+"aliases": [
+"Italian Republic"
+]
+},
+"JM": {
+"iso2": "JM",
+"en": "Jamaica",
+"ar": "جامايكا",
+"iso3": "JAM",
+"lon": -77.319,
+"lat": 18.137,
+"aliases": []
+},
+"JP": {
+"iso2": "JP",
+"en": "Japan",
+"ar": "اليابان",
+"iso3": "JPN",
+"lon": 138.442,
+"lat": 36.143,
+"aliases": []
+},
+"JE": {
+"iso2": "JE",
+"en": "Jersey",
+"ar": "جيرسي",
+"iso3": "JEY",
+"lon": -2.09,
+"lat": 49.221,
+"aliases": [
+"Bailiwick of Jersey",
+"جيرزي"
+]
+},
+"JO": {
+"iso2": "JO",
+"en": "Jordan",
+"ar": "الأردن",
+"iso3": "JOR",
+"lon": 36.376,
+"lat": 30.805,
+"aliases": [
+"Hashemite Kingdom of Jordan"
+]
+},
+"KZ": {
+"iso2": "KZ",
+"en": "Kazakhstan",
+"ar": "كازاخستان",
+"iso3": "KAZ",
+"lon": 68.686,
+"lat": 49.054,
+"aliases": [
+"Republic of Kazakhstan"
+]
+},
+"KE": {
+"iso2": "KE",
+"en": "Kenya",
+"ar": "كينيا",
+"iso3": "KEN",
+"lon": 37.908,
+"lat": 0.549,
+"aliases": [
+"Republic of Kenya"
+]
+},
+"KI": {
+"iso2": "KI",
+"en": "Kiribati",
+"ar": "كيريباتي",
+"iso3": "KIR",
+"lon": -157.385,
+"lat": 1.82,
+"aliases": [
+"Republic of Kiribati"
+]
+},
+"KW": {
+"iso2": "KW",
+"en": "Kuwait",
+"ar": "الكويت",
+"iso3": "KWT",
+"lon": 47.314,
+"lat": 29.414,
+"aliases": [
+"State of Kuwait"
+]
+},
+"KG": {
+"iso2": "KG",
+"en": "Kyrgyzstan",
+"ar": "قيرغيزستان",
+"iso3": "KGZ",
+"lon": 74.533,
+"lat": 41.669,
+"aliases": [
+"Kyrgyz Republic"
+]
+},
+"LA": {
+"iso2": "LA",
+"en": "Laos",
+"ar": "لاوس",
+"iso3": "LAO",
+"lon": 102.534,
+"lat": 19.432,
+"aliases": [
+"Lao PDR",
+"Lao People's Democratic Republic"
+]
+},
+"LV": {
+"iso2": "LV",
+"en": "Latvia",
+"ar": "لاتفيا",
+"iso3": "LVA",
+"lon": 25.459,
+"lat": 57.067,
+"aliases": [
+"Republic of Latvia"
+]
+},
+"LB": {
+"iso2": "LB",
+"en": "Lebanon",
+"ar": "لبنان",
+"iso3": "LBN",
+"lon": 35.993,
+"lat": 34.133,
+"aliases": [
+"Lebanese Republic"
+]
+},
+"LS": {
+"iso2": "LS",
+"en": "Lesotho",
+"ar": "ليسوتو",
+"iso3": "LSO",
+"lon": 28.247,
+"lat": -29.48,
+"aliases": [
+"Kingdom of Lesotho"
+]
+},
+"LR": {
+"iso2": "LR",
+"en": "Liberia",
+"ar": "ليبيريا",
+"iso3": "LBR",
+"lon": -9.46,
+"lat": 6.447,
+"aliases": [
+"Republic of Liberia"
+]
+},
+"LY": {
+"iso2": "LY",
+"en": "Libya",
+"ar": "ليبيا",
+"iso3": "LBY",
+"lon": 18.011,
+"lat": 26.639,
+"aliases": []
+},
+"LI": {
+"iso2": "LI",
+"en": "Liechtenstein",
+"ar": "ليختنشتاين",
+"iso3": "LIE",
+"lon": 9.559,
+"lat": 47.111,
+"aliases": [
+"Principality of Liechtenstein"
+]
+},
+"LT": {
+"iso2": "LT",
+"en": "Lithuania",
+"ar": "ليتوانيا",
+"iso3": "LTU",
+"lon": 24.09,
+"lat": 55.104,
+"aliases": [
+"Republic of Lithuania"
+]
+},
+"LU": {
+"iso2": "LU",
+"en": "Luxembourg",
+"ar": "لوكسمبورغ",
+"iso3": "LUX",
+"lon": 6.078,
+"lat": 49.734,
+"aliases": [
+"Grand Duchy of Luxembourg"
+]
+},
+"MO": {
+"iso2": "MO",
+"en": "Macao SAR China",
+"ar": "منطقة ماكاو الإدارية الخاصة",
+"iso3": "MAC",
+"lon": 113.556,
+"lat": 22.13,
+"aliases": [
+"Macao",
+"Macao Special Administrative Region, PRC",
+"ماكاو",
+"Macao S.A.R",
+"Macao SAR, China"
+]
+},
+"MG": {
+"iso2": "MG",
+"en": "Madagascar",
+"ar": "مدغشقر",
+"iso3": "MDG",
+"lon": 46.704,
+"lat": -18.628,
+"aliases": [
+"Republic of Madagascar"
+]
+},
+"MW": {
+"iso2": "MW",
+"en": "Malawi",
+"ar": "ملاوي",
+"iso3": "MWI",
+"lon": 33.608,
+"lat": -13.387,
+"aliases": [
+"Republic of Malawi",
+"مالاوي"
+]
+},
+"MY": {
+"iso2": "MY",
+"en": "Malaysia",
+"ar": "ماليزيا",
+"iso3": "MYS",
+"lon": 113.837,
+"lat": 2.529,
+"aliases": []
+},
+"MV": {
+"iso2": "MV",
+"en": "Maldives",
+"ar": "جزر المالديف",
+"iso3": "MDV",
+"lon": 73.508,
+"lat": 4.174,
+"aliases": [
+"Republic of Maldives",
+"المالديف"
+]
+},
+"ML": {
+"iso2": "ML",
+"en": "Mali",
+"ar": "مالي",
+"iso3": "MLI",
+"lon": -2.038,
+"lat": 18.693,
+"aliases": [
+"Republic of Mali"
+]
+},
+"MT": {
+"iso2": "MT",
+"en": "Malta",
+"ar": "مالطا",
+"iso3": "MLT",
+"lon": 14.433,
+"lat": 35.893,
+"aliases": [
+"Republic of Malta"
+]
+},
+"MH": {
+"iso2": "MH",
+"en": "Marshall Islands",
+"ar": "جزر مارشال",
+"iso3": "MHL",
+"lon": 171.194,
+"lat": 7.083,
+"aliases": [
+"Marshall Is.",
+"Republic of the Marshall Islands"
+]
+},
+"MQ": {
+"iso2": "MQ",
+"en": "Martinique",
+"ar": "جزر المارتينيك",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"MR": {
+"iso2": "MR",
+"en": "Mauritania",
+"ar": "موريتانيا",
+"iso3": "MRT",
+"lon": -9.74,
+"lat": 19.587,
+"aliases": [
+"Islamic Republic of Mauritania"
+]
+},
+"MU": {
+"iso2": "MU",
+"en": "Mauritius",
+"ar": "موريشيوس",
+"iso3": "MUS",
+"lon": 57.566,
+"lat": -20.3,
+"aliases": [
+"Republic of Mauritius"
+]
+},
+"YT": {
+"iso2": "YT",
+"en": "Mayotte",
+"ar": "مايوت",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"MX": {
+"iso2": "MX",
+"en": "Mexico",
+"ar": "المكسيك",
+"iso3": "MEX",
+"lon": -102.289,
+"lat": 23.92,
+"aliases": [
+"United Mexican States"
+]
+},
+"FM": {
+"iso2": "FM",
+"en": "Micronesia",
+"ar": "ميكرونيزيا",
+"iso3": "FSM",
+"lon": 158.234,
+"lat": 6.888,
+"aliases": [
+"Federated States of Micronesia",
+"ولايات ميكرونيسيا المتحدة",
+"Micronesia, Federated States of"
+]
+},
+"MD": {
+"iso2": "MD",
+"en": "Moldova",
+"ar": "مولدوفا",
+"iso3": "MDA",
+"lon": 28.488,
+"lat": 47.435,
+"aliases": [
+"Republic of Moldova"
+]
+},
+"MC": {
+"iso2": "MC",
+"en": "Monaco",
+"ar": "موناكو",
+"iso3": "MCO",
+"lon": 7.398,
+"lat": 43.74,
+"aliases": [
+"Principality of Monaco"
+]
+},
+"MN": {
+"iso2": "MN",
+"en": "Mongolia",
+"ar": "منغوليا",
+"iso3": "MNG",
+"lon": 104.15,
+"lat": 45.997,
+"aliases": []
+},
+"ME": {
+"iso2": "ME",
+"en": "Montenegro",
+"ar": "الجبل الأسود",
+"iso3": "MNE",
+"lon": 19.144,
+"lat": 42.803,
+"aliases": []
+},
+"MS": {
+"iso2": "MS",
+"en": "Montserrat",
+"ar": "مونتسرات",
+"iso3": "MSR",
+"lon": -62.188,
+"lat": 16.737,
+"aliases": []
+},
+"MA": {
+"iso2": "MA",
+"en": "Morocco",
+"ar": "المغرب",
+"iso3": "MAR",
+"lon": -7.187,
+"lat": 31.651,
+"aliases": [
+"Kingdom of Morocco"
+]
+},
+"MZ": {
+"iso2": "MZ",
+"en": "Mozambique",
+"ar": "موزمبيق",
+"iso3": "MOZ",
+"lon": 37.838,
+"lat": -13.943,
+"aliases": [
+"Republic of Mozambique"
+]
+},
+"MM": {
+"iso2": "MM",
+"en": "Myanmar (Burma)",
+"ar": "ميانمار (بورما)",
+"iso3": "MMR",
+"lon": 95.804,
+"lat": 21.574,
+"aliases": [
+"Myanmar",
+"Republic of the Union of Myanmar",
+"ميانمار"
+]
+},
+"NA": {
+"iso2": "NA",
+"en": "Namibia",
+"ar": "ناميبيا",
+"iso3": "NAM",
+"lon": 17.108,
+"lat": -20.575,
+"aliases": [
+"Republic of Namibia"
+]
+},
+"NR": {
+"iso2": "NR",
+"en": "Nauru",
+"ar": "ناورو",
+"iso3": "NRU",
+"lon": 166.933,
+"lat": -0.52,
+"aliases": [
+"Republic of Nauru"
+]
+},
+"NP": {
+"iso2": "NP",
+"en": "Nepal",
+"ar": "نيبال",
+"iso3": "NPL",
+"lon": 83.64,
+"lat": 28.298,
+"aliases": []
+},
+"NL": {
+"iso2": "NL",
+"en": "Netherlands",
+"ar": "هولندا",
+"iso3": "NLD",
+"lon": 5.611,
+"lat": 52.422,
+"aliases": [
+"Kingdom of the Netherlands"
+]
+},
+"NC": {
+"iso2": "NC",
+"en": "New Caledonia",
+"ar": "كاليدونيا الجديدة",
+"iso3": "NCL",
+"lon": 165.084,
+"lat": -21.065,
+"aliases": []
+},
+"NZ": {
+"iso2": "NZ",
+"en": "New Zealand",
+"ar": "نيوزيلندا",
+"iso3": "NZL",
+"lon": 172.787,
+"lat": -39.759,
+"aliases": []
+},
+"NI": {
+"iso2": "NI",
+"en": "Nicaragua",
+"ar": "نيكاراغوا",
+"iso3": "NIC",
+"lon": -85.069,
+"lat": 12.671,
+"aliases": [
+"Republic of Nicaragua"
+]
+},
+"NE": {
+"iso2": "NE",
+"en": "Niger",
+"ar": "النيجر",
+"iso3": "NER",
+"lon": 9.504,
+"lat": 17.446,
+"aliases": [
+"Republic of Niger"
+]
+},
+"NG": {
+"iso2": "NG",
+"en": "Nigeria",
+"ar": "نيجيريا",
+"iso3": "NGA",
+"lon": 7.503,
+"lat": 9.44,
+"aliases": [
+"Federal Republic of Nigeria"
+]
+},
+"NU": {
+"iso2": "NU",
+"en": "Niue",
+"ar": "نيوي",
+"iso3": "NIU",
+"lon": -169.863,
+"lat": -19.046,
+"aliases": [
+"نييوي"
+]
+},
+"NF": {
+"iso2": "NF",
+"en": "Norfolk Island",
+"ar": "جزيرة نورفولك",
+"iso3": "NFK",
+"lon": 167.955,
+"lat": -29.033,
+"aliases": [
+"Territory of Norfolk Island"
+]
+},
+"KP": {
+"iso2": "KP",
+"en": "North Korea",
+"ar": "كوريا الشمالية",
+"iso3": "PRK",
+"lon": 126.445,
+"lat": 39.885,
+"aliases": [
+"Dem. Rep. Korea",
+"Democratic People's Republic of Korea",
+"Korea, Dem. Rep."
+]
+},
+"MK": {
+"iso2": "MK",
+"en": "North Macedonia",
+"ar": "مقدونيا الشمالية",
+"iso3": "MKD",
+"lon": 21.556,
+"lat": 41.558,
+"aliases": [
+"Republic of North Macedonia"
+]
+},
+"MP": {
+"iso2": "MP",
+"en": "Northern Mariana Islands",
+"ar": "جزر ماريانا الشمالية",
+"iso3": "MNP",
+"lon": 145.734,
+"lat": 15.188,
+"aliases": [
+"N. Mariana Is.",
+"Commonwealth of the Northern Mariana Islands"
+]
+},
+"NO": {
+"iso2": "NO",
+"en": "Norway",
+"ar": "النرويج",
+"iso3": "NOR",
+"lon": 9.68,
+"lat": 61.357,
+"aliases": [
+"Kingdom of Norway"
+]
+},
+"OM": {
+"iso2": "OM",
+"en": "Oman",
+"ar": "عُمان",
+"iso3": "OMN",
+"lon": 57.337,
+"lat": 22.12,
+"aliases": [
+"Sultanate of Oman",
+"سلطنة عمان"
+]
+},
+"PK": {
+"iso2": "PK",
+"en": "Pakistan",
+"ar": "باكستان",
+"iso3": "PAK",
+"lon": 68.546,
+"lat": 29.328,
+"aliases": [
+"Islamic Republic of Pakistan"
+]
+},
+"PW": {
+"iso2": "PW",
+"en": "Palau",
+"ar": "بالاو",
+"iso3": "PLW",
+"lon": 134.58,
+"lat": 7.518,
+"aliases": [
+"Republic of Palau"
+]
+},
+"PS": {
+"iso2": "PS",
+"en": "Palestinian Territories",
+"ar": "الأراضي الفلسطينية",
+"iso3": "PSE",
+"lon": 35.291,
+"lat": 32.047,
+"aliases": [
+"Palestine",
+"West Bank and Gaza",
+"فلسطين",
+"Palestine (West Bank and Gaza)"
+]
+},
+"PA": {
+"iso2": "PA",
+"en": "Panama",
+"ar": "بنما",
+"iso3": "PAN",
+"lon": -80.352,
+"lat": 8.722,
+"aliases": [
+"Republic of Panama"
+]
+},
+"PG": {
+"iso2": "PG",
+"en": "Papua New Guinea",
+"ar": "بابوا غينيا الجديدة",
+"iso3": "PNG",
+"lon": 143.91,
+"lat": -5.695,
+"aliases": [
+"Independent State of Papua New Guinea"
+]
+},
+"PY": {
+"iso2": "PY",
+"en": "Paraguay",
+"ar": "باراغواي",
+"iso3": "PRY",
+"lon": -60.146,
+"lat": -21.675,
+"aliases": [
+"Republic of Paraguay"
+]
+},
+"PE": {
+"iso2": "PE",
+"en": "Peru",
+"ar": "بيرو",
+"iso3": "PER",
+"lon": -72.9,
+"lat": -12.977,
+"aliases": [
+"Republic of Peru"
+]
+},
+"PH": {
+"iso2": "PH",
+"en": "Philippines",
+"ar": "الفلبين",
+"iso3": "PHL",
+"lon": 122.465,
+"lat": 11.198,
+"aliases": [
+"Republic of the Philippines"
+]
+},
+"PN": {
+"iso2": "PN",
+"en": "Pitcairn Islands",
+"ar": "جزر بيتكيرن",
+"iso3": "PCN",
+"lon": -128.318,
+"lat": -24.365,
+"aliases": [
+"Pitcairn Is.",
+"Pitcairn, Henderson, Ducie and Oeno Islands"
+]
+},
+"PL": {
+"iso2": "PL",
+"en": "Poland",
+"ar": "بولندا",
+"iso3": "POL",
+"lon": 19.49,
+"lat": 51.99,
+"aliases": [
+"Republic of Poland"
+]
+},
+"PT": {
+"iso2": "PT",
+"en": "Portugal",
+"ar": "البرتغال",
+"iso3": "PRT",
+"lon": -8.272,
+"lat": 39.607,
+"aliases": [
+"Portuguese Republic"
+]
+},
+"PR": {
+"iso2": "PR",
+"en": "Puerto Rico",
+"ar": "بورتوريكو",
+"iso3": "PRI",
+"lon": -66.481,
+"lat": 18.235,
+"aliases": [
+"Commonwealth of Puerto Rico"
+]
+},
+"QA": {
+"iso2": "QA",
+"en": "Qatar",
+"ar": "قطر",
+"iso3": "QAT",
+"lon": 51.144,
+"lat": 25.237,
+"aliases": [
+"State of Qatar"
+]
+},
+"RE": {
+"iso2": "RE",
+"en": "Réunion",
+"ar": "روينيون",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"RO": {
+"iso2": "RO",
+"en": "Romania",
+"ar": "رومانيا",
+"iso3": "ROU",
+"lon": 24.973,
+"lat": 45.733,
+"aliases": []
+},
+"RU": {
+"iso2": "RU",
+"en": "Russia",
+"ar": "روسيا",
+"iso3": "RUS",
+"lon": 44.686,
+"lat": 58.249,
+"aliases": [
+"Russian Federation"
+]
+},
+"RW": {
+"iso2": "RW",
+"en": "Rwanda",
+"ar": "رواندا",
+"iso3": "RWA",
+"lon": 30.104,
+"lat": -1.897,
+"aliases": [
+"Republic of Rwanda"
+]
+},
+"WS": {
+"iso2": "WS",
+"en": "Samoa",
+"ar": "ساموا",
+"iso3": "WSM",
+"lon": -172.438,
+"lat": -13.639,
+"aliases": [
+"Independent State of Samoa"
+]
+},
+"SM": {
+"iso2": "SM",
+"en": "San Marino",
+"ar": "سان مارينو",
+"iso3": "SMR",
+"lon": 12.441,
+"lat": 43.934,
+"aliases": [
+"Republic of San Marino"
+]
+},
+"ST": {
+"iso2": "ST",
+"en": "São Tomé & Príncipe",
+"ar": "ساو تومي وبرينسيبي",
+"iso3": "STP",
+"lon": 7.021,
+"lat": 0.971,
+"aliases": [
+"São Tomé and Principe",
+"Democratic Republic of São Tomé and Principe",
+"ساو تومي وبرينسيب",
+"Sao Tome and Principe"
+]
+},
+"SA": {
+"iso2": "SA",
+"en": "Saudi Arabia",
+"ar": "المملكة العربية السعودية",
+"iso3": "SAU",
+"lon": 44.7,
+"lat": 23.807,
+"aliases": [
+"Kingdom of Saudi Arabia",
+"السعودية"
+]
+},
+"SN": {
+"iso2": "SN",
+"en": "Senegal",
+"ar": "السنغال",
+"iso3": "SEN",
+"lon": -14.779,
+"lat": 15.138,
+"aliases": [
+"Republic of Senegal"
+]
+},
+"RS": {
+"iso2": "RS",
+"en": "Serbia",
+"ar": "صربيا",
+"iso3": "SRB",
+"lon": 20.788,
+"lat": 44.19,
+"aliases": [
+"Republic of Serbia"
+]
+},
+"SC": {
+"iso2": "SC",
+"en": "Seychelles",
+"ar": "سيشل",
+"iso3": "SYC",
+"lon": 55.48,
+"lat": -4.677,
+"aliases": [
+"Republic of Seychelles"
+]
+},
+"SL": {
+"iso2": "SL",
+"en": "Sierra Leone",
+"ar": "سيراليون",
+"iso3": "SLE",
+"lon": -11.764,
+"lat": 8.617,
+"aliases": [
+"Republic of Sierra Leone"
+]
+},
+"SG": {
+"iso2": "SG",
+"en": "Singapore",
+"ar": "سنغافورة",
+"iso3": "SGP",
+"lon": 103.817,
+"lat": 1.367,
+"aliases": [
+"Republic of Singapore"
+]
+},
+"SX": {
+"iso2": "SX",
+"en": "Sint Maarten",
+"ar": "سانت مارتن",
+"iso3": "SXM",
+"lon": -63.07,
+"lat": 18.041,
+"aliases": [
+"Sint Maarten (Dutch part)",
+"سينت مارتن",
+"St. Maarten (Dutch part)"
+]
+},
+"SK": {
+"iso2": "SK",
+"en": "Slovakia",
+"ar": "سلوفاكيا",
+"iso3": "SVK",
+"lon": 19.05,
+"lat": 48.734,
+"aliases": [
+"Slovak Republic"
+]
+},
+"SI": {
+"iso2": "SI",
+"en": "Slovenia",
+"ar": "سلوفينيا",
+"iso3": "SVN",
+"lon": 14.915,
+"lat": 46.061,
+"aliases": [
+"Republic of Slovenia"
+]
+},
+"SB": {
+"iso2": "SB",
+"en": "Solomon Islands",
+"ar": "جزر سليمان",
+"iso3": "SLB",
+"lon": 159.17,
+"lat": -8.03,
+"aliases": [
+"Solomon Is."
+]
+},
+"SO": {
+"iso2": "SO",
+"en": "Somalia",
+"ar": "الصومال",
+"iso3": "SOM",
+"lon": 45.192,
+"lat": 3.569,
+"aliases": [
+"Federal Republic of Somalia"
+]
+},
+"ZA": {
+"iso2": "ZA",
+"en": "South Africa",
+"ar": "جنوب أفريقيا",
+"iso3": "ZAF",
+"lon": 23.666,
+"lat": -29.709,
+"aliases": [
+"Republic of South Africa"
+]
+},
+"GS": {
+"iso2": "GS",
+"en": "South Georgia & South Sandwich Islands",
+"ar": "جورجيا الجنوبية وجزر ساندويتش الجنوبية",
+"iso3": "SGS",
+"lon": -31.063,
+"lat": -55.683,
+"aliases": [
+"S. Geo. and the Is.",
+"South Georgia and the Islands"
+]
+},
+"KR": {
+"iso2": "KR",
+"en": "South Korea",
+"ar": "كوريا الجنوبية",
+"iso3": "KOR",
+"lon": 128.13,
+"lat": 36.385,
+"aliases": [
+"Republic of Korea",
+"Korea, Rep."
+]
+},
+"SS": {
+"iso2": "SS",
+"en": "South Sudan",
+"ar": "جنوب السودان",
+"iso3": "SSD",
+"lon": 30.39,
+"lat": 7.23,
+"aliases": [
+"S. Sudan",
+"Republic of South Sudan"
+]
+},
+"ES": {
+"iso2": "ES",
+"en": "Spain",
+"ar": "إسبانيا",
+"iso3": "ESP",
+"lon": -3.465,
+"lat": 40.091,
+"aliases": [
+"Kingdom of Spain"
+]
+},
+"LK": {
+"iso2": "LK",
+"en": "Sri Lanka",
+"ar": "سريلانكا",
+"iso3": "LKA",
+"lon": 80.705,
+"lat": 7.581,
+"aliases": [
+"Democratic Socialist Republic of Sri Lanka"
+]
+},
+"BL": {
+"iso2": "BL",
+"en": "St. Barthélemy",
+"ar": "سان بارتليمي",
+"iso3": "BLM",
+"lon": -62.833,
+"lat": 17.902,
+"aliases": [
+"St-Barthélemy",
+"Saint-Barthélemy",
+"سان بارتيلمي",
+"Saint Barthelemy"
+]
+},
+"SH": {
+"iso2": "SH",
+"en": "St. Helena",
+"ar": "سانت هيلينا",
+"iso3": "SHN",
+"lon": -5.713,
+"lat": -15.95,
+"aliases": [
+"Saint Helena"
+]
+},
+"KN": {
+"iso2": "KN",
+"en": "St. Kitts & Nevis",
+"ar": "سانت كيتس ونيفيس",
+"iso3": "KNA",
+"lon": -62.758,
+"lat": 17.337,
+"aliases": [
+"St. Kitts and Nevis",
+"Saint Kitts and Nevis",
+"Federation of Saint Kitts and Nevis"
+]
+},
+"LC": {
+"iso2": "LC",
+"en": "St. Lucia",
+"ar": "سانت لوسيا",
+"iso3": "LCA",
+"lon": -60.98,
+"lat": 13.892,
+"aliases": [
+"Saint Lucia"
+]
+},
+"MF": {
+"iso2": "MF",
+"en": "St. Martin",
+"ar": "سان مارتن",
+"iso3": "MAF",
+"lon": -63.049,
+"lat": 18.081,
+"aliases": [
+"St-Martin",
+"Saint-Martin",
+"Saint-Martin (French part)",
+"تجمع سان مارتين",
+"Saint Martin",
+"St. Martin (French part)"
+]
+},
+"PM": {
+"iso2": "PM",
+"en": "St. Pierre & Miquelon",
+"ar": "سان بيير ومكويلون",
+"iso3": "SPM",
+"lon": -56.332,
+"lat": 47.04,
+"aliases": [
+"St. Pierre and Miquelon",
+"Saint Pierre and Miquelon",
+"سان بيير وميكلون"
+]
+},
+"VC": {
+"iso2": "VC",
+"en": "St. Vincent & Grenadines",
+"ar": "سانت فنسنت وجزر غرينادين",
+"iso3": "VCT",
+"lon": -61.336,
+"lat": 13.088,
+"aliases": [
+"St. Vin. and Gren.",
+"Saint Vincent and the Grenadines",
+"سانت فينسنت والغرينادين",
+"St. Vincent and the Grenadines"
+]
+},
+"SD": {
+"iso2": "SD",
+"en": "Sudan",
+"ar": "السودان",
+"iso3": "SDN",
+"lon": 29.261,
+"lat": 16.331,
+"aliases": [
+"Republic of the Sudan"
+]
+},
+"SR": {
+"iso2": "SR",
+"en": "Suriname",
+"ar": "سورينام",
+"iso3": "SUR",
+"lon": -55.911,
+"lat": 4.144,
+"aliases": [
+"Republic of Suriname"
+]
+},
+"SJ": {
+"iso2": "SJ",
+"en": "Svalbard & Jan Mayen",
+"ar": "سفالبارد وجان ماين",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"SE": {
+"iso2": "SE",
+"en": "Sweden",
+"ar": "السويد",
+"iso3": "SWE",
+"lon": 19.017,
+"lat": 65.859,
+"aliases": [
+"Kingdom of Sweden"
+]
+},
+"CH": {
+"iso2": "CH",
+"en": "Switzerland",
+"ar": "سويسرا",
+"iso3": "CHE",
+"lon": 7.464,
+"lat": 46.719,
+"aliases": [
+"Swiss Confederation"
+]
+},
+"SY": {
+"iso2": "SY",
+"en": "Syria",
+"ar": "سوريا",
+"iso3": "SYR",
+"lon": 38.278,
+"lat": 35.007,
+"aliases": [
+"Syrian Arab Republic"
+]
+},
+"TW": {
+"iso2": "TW",
+"en": "Taiwan",
+"ar": "تايوان",
+"iso3": "TWN",
+"lon": 120.868,
+"lat": 23.652,
+"aliases": []
+},
+"TJ": {
+"iso2": "TJ",
+"en": "Tajikistan",
+"ar": "طاجيكستان",
+"iso3": "TJK",
+"lon": 72.587,
+"lat": 38.2,
+"aliases": [
+"Republic of Tajikistan"
+]
+},
+"TZ": {
+"iso2": "TZ",
+"en": "Tanzania",
+"ar": "تنزانيا",
+"iso3": "TZA",
+"lon": 34.959,
+"lat": -6.052,
+"aliases": [
+"United Republic of Tanzania"
+]
+},
+"TH": {
+"iso2": "TH",
+"en": "Thailand",
+"ar": "تايلاند",
+"iso3": "THA",
+"lon": 101.073,
+"lat": 15.46,
+"aliases": [
+"Kingdom of Thailand"
+]
+},
+"TL": {
+"iso2": "TL",
+"en": "Timor-Leste",
+"ar": "تيمور - ليشتي",
+"iso3": "TLS",
+"lon": 125.855,
+"lat": -8.804,
+"aliases": [
+"Democratic Republic of Timor-Leste",
+"تيمور الشرقية",
+"East Timor"
+]
+},
+"TG": {
+"iso2": "TG",
+"en": "Togo",
+"ar": "توغو",
+"iso3": "TGO",
+"lon": 1.058,
+"lat": 8.807,
+"aliases": [
+"Togolese Republic"
+]
+},
+"TK": {
+"iso2": "TK",
+"en": "Tokelau",
+"ar": "توكيلو",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"TO": {
+"iso2": "TO",
+"en": "Tonga",
+"ar": "تونغا",
+"iso3": "TON",
+"lon": -175.163,
+"lat": -21.21,
+"aliases": [
+"Kingdom of Tonga"
+]
+},
+"TT": {
+"iso2": "TT",
+"en": "Trinidad & Tobago",
+"ar": "ترينيداد وتوباغو",
+"iso3": "TTO",
+"lon": -60.918,
+"lat": 10.999,
+"aliases": [
+"Trinidad and Tobago",
+"Republic of Trinidad and Tobago"
+]
+},
+"TN": {
+"iso2": "TN",
+"en": "Tunisia",
+"ar": "تونس",
+"iso3": "TUN",
+"lon": 9.008,
+"lat": 33.687,
+"aliases": [
+"Republic of Tunisia"
+]
+},
+"TR": {
+"iso2": "TR",
+"en": "Turkey",
+"ar": "تركيا",
+"iso3": "TUR",
+"lon": 34.508,
+"lat": 39.345,
+"aliases": [
+"Republic of Turkey"
+]
+},
+"TM": {
+"iso2": "TM",
+"en": "Turkmenistan",
+"ar": "تركمانستان",
+"iso3": "TKM",
+"lon": 58.677,
+"lat": 39.855,
+"aliases": []
+},
+"TC": {
+"iso2": "TC",
+"en": "Turks & Caicos Islands",
+"ar": "جزر توركس وكايكوس",
+"iso3": "TCA",
+"lon": -71.753,
+"lat": 21.817,
+"aliases": [
+"Turks and Caicos Is.",
+"Turks and Caicos Islands"
+]
+},
+"TV": {
+"iso2": "TV",
+"en": "Tuvalu",
+"ar": "توفالو",
+"iso3": "TUV",
+"lon": 179.21,
+"lat": -8.514,
+"aliases": []
+},
+"UM": {
+"iso2": "UM",
+"en": "U.S. Outlying Islands",
+"ar": "جزر الولايات المتحدة النائية",
+"iso3": null,
+"lon": null,
+"lat": null,
+"aliases": []
+},
+"VI": {
+"iso2": "VI",
+"en": "U.S. Virgin Islands",
+"ar": "جزر فيرجن التابعة للولايات المتحدة",
+"iso3": "VIR",
+"lon": -64.779,
+"lat": 17.747,
+"aliases": [
+"U.S. Virgin Is.",
+"United States Virgin Islands",
+"Virgin Islands of the United States",
+"جزر العذراء الأمريكية",
+"Virgin Islands (U.S.)"
+]
+},
+"UG": {
+"iso2": "UG",
+"en": "Uganda",
+"ar": "أوغندا",
+"iso3": "UGA",
+"lon": 32.949,
+"lat": 1.973,
+"aliases": [
+"Republic of Uganda"
+]
+},
+"UA": {
+"iso2": "UA",
+"en": "Ukraine",
+"ar": "أوكرانيا",
+"iso3": "UKR",
+"lon": 32.141,
+"lat": 49.725,
+"aliases": []
+},
+"AE": {
+"iso2": "AE",
+"en": "United Arab Emirates",
+"ar": "الإمارات العربية المتحدة",
+"iso3": "ARE",
+"lon": 54.547,
+"lat": 23.466,
+"aliases": []
+},
+"GB": {
+"iso2": "GB",
+"en": "United Kingdom",
+"ar": "المملكة المتحدة",
+"iso3": "GBR",
+"lon": -2.116,
+"lat": 54.403,
+"aliases": [
+"United Kingdom of Great Britain and Northern Ireland"
+]
+},
+"US": {
+"iso2": "US",
+"en": "United States",
+"ar": "الولايات المتحدة",
+"iso3": "USA",
+"lon": -97.483,
+"lat": 39.538,
+"aliases": [
+"United States of America"
+]
+},
+"UY": {
+"iso2": "UY",
+"en": "Uruguay",
+"ar": "أورغواي",
+"iso3": "URY",
+"lon": -55.967,
+"lat": -32.961,
+"aliases": [
+"Oriental Republic of Uruguay",
+"الأوروغواي"
+]
+},
+"UZ": {
+"iso2": "UZ",
+"en": "Uzbekistan",
+"ar": "أوزبكستان",
+"iso3": "UZB",
+"lon": 64.005,
+"lat": 41.694,
+"aliases": [
+"Republic of Uzbekistan"
+]
+},
+"VU": {
+"iso2": "VU",
+"en": "Vanuatu",
+"ar": "فانواتو",
+"iso3": "VUT",
+"lon": 166.909,
+"lat": -15.372,
+"aliases": [
+"Republic of Vanuatu"
+]
+},
+"VA": {
+"iso2": "VA",
+"en": "Vatican City",
+"ar": "الفاتيكان",
+"iso3": "VAT",
+"lon": 12.453,
+"lat": 41.903,
+"aliases": [
+"Vatican",
+"State of the Vatican City",
+"Vatican (Holy See)"
+]
+},
+"VE": {
+"iso2": "VE",
+"en": "Venezuela",
+"ar": "فنزويلا",
+"iso3": "VEN",
+"lon": -64.599,
+"lat": 7.182,
+"aliases": [
+"Bolivarian Republic of Venezuela",
+"Venezuela, RB"
+]
+},
+"VN": {
+"iso2": "VN",
+"en": "Vietnam",
+"ar": "فيتنام",
+"iso3": "VNM",
+"lon": 105.387,
+"lat": 21.715,
+"aliases": [
+"Socialist Republic of Vietnam"
+]
+},
+"WF": {
+"iso2": "WF",
+"en": "Wallis & Futuna",
+"ar": "جزر والس وفوتونا",
+"iso3": "WLF",
+"lon": -178.137,
+"lat": -14.286,
+"aliases": [
+"Wallis and Futuna Is.",
+"Wallis and Futuna Islands",
+"واليس وفوتونا",
+"Wallis and Futuna"
+]
+},
+"EH": {
+"iso2": "EH",
+"en": "Western Sahara",
+"ar": "الصحراء الغربية",
+"iso3": "ESH",
+"lon": -12.63,
+"lat": 23.968,
+"aliases": [
+"W. Sahara",
+"Sahrawi Arab Democratic Republic"
+]
+},
+"YE": {
+"iso2": "YE",
+"en": "Yemen",
+"ar": "اليمن",
+"iso3": "YEM",
+"lon": 45.874,
+"lat": 15.328,
+"aliases": [
+"Republic of Yemen",
+"Yemen, Rep."
+]
+},
+"ZM": {
+"iso2": "ZM",
+"en": "Zambia",
+"ar": "زامبيا",
+"iso3": "ZMB",
+"lon": 26.395,
+"lat": -14.661,
+"aliases": [
+"Republic of Zambia"
+]
+},
+"ZW": {
+"iso2": "ZW",
+"en": "Zimbabwe",
+"ar": "زيمبابوي",
+"iso3": "ZWE",
+"lon": 29.925,
+"lat": -18.912,
+"aliases": [
+"Republic of Zimbabwe"
+]
+},
+"XK": {
+"iso2": "XK",
+"en": "Kosovo",
+"ar": "كوسوفو",
+"iso3": "KOS",
+"lon": 20.861,
+"lat": 42.594,
+"aliases": [
+"Republic of Kosovo"
+]
+}
+}
