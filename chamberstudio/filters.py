@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import re
+import uuid
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Union
@@ -32,6 +33,10 @@ DATE_PRESETS = ["range", "this_year", "last_year", "ytd", "last_12_months", "pic
 AGGS = ["sum", "mean", "count", "nunique", "min", "max", "median"]
 
 
+def _new_id() -> str:
+    return uuid.uuid4().hex[:8]
+
+
 # ---------------------------------------------------------------- the specs
 @dataclass
 class CategoryFilter:
@@ -42,6 +47,7 @@ class CategoryFilter:
     top_by: str | None = None         # ... ranked by this measure column (None = number of rows)
     top_agg: str = "sum"
     bottom: bool = False
+    id: str = field(default_factory=_new_id, compare=False)   # stable key for the app (not compared)
 
 
 @dataclass
@@ -50,6 +56,7 @@ class NumberFilter:
     op: str = "between"
     value: float | None = None
     value2: float | None = None       # upper bound for "between"
+    id: str = field(default_factory=_new_id, compare=False)   # stable key for the app (not compared)
 
 
 @dataclass
@@ -62,6 +69,7 @@ class DateFilter:
     quarters: list = field(default_factory=list)  # ... and quarters (1-4) ...
     months: list = field(default_factory=list)    # ... and months (1-12)
     anchor: str = "data"              # presets relative to the latest date in the data, or "today"
+    id: str = field(default_factory=_new_id, compare=False)   # stable key for the app (not compared)
 
 
 @dataclass
@@ -70,6 +78,7 @@ class TextFilter:
     op: str = "contains"
     value: str = ""
     case_sensitive: bool = False
+    id: str = field(default_factory=_new_id, compare=False)   # stable key for the app (not compared)
 
 
 @dataclass
@@ -77,6 +86,7 @@ class Group:
     logic: str = "and"                # "and" / "or"
     items: list = field(default_factory=list)
     negate: bool = False              # NOT (...)
+    id: str = field(default_factory=_new_id, compare=False)   # stable key for the app (not compared)
 
 
 Filter = Union[CategoryFilter, NumberFilter, DateFilter, TextFilter, Group]
@@ -87,7 +97,8 @@ _NAMES = {v: k for k, v in _TYPES.items()}
 # ---------------------------------------------------------------- JSON
 def to_dict(spec: Filter) -> dict:
     if isinstance(spec, Group):
-        return {"type": "group", "logic": spec.logic, "negate": spec.negate, "items": [to_dict(i) for i in spec.items]}
+        return {"type": "group", "logic": spec.logic, "negate": spec.negate, "id": spec.id,
+                "items": [to_dict(i) for i in spec.items]}
     return {"type": _NAMES[type(spec)], **asdict(spec)}
 
 
@@ -96,7 +107,8 @@ def from_dict(d: dict) -> Filter:
     if kind not in _TYPES:
         raise ValueError(f"unknown filter type {kind!r}")
     if kind == "group":
-        return Group(d.get("logic", "and"), [from_dict(i) for i in d.get("items", [])], bool(d.get("negate")))
+        return Group(d.get("logic", "and"), [from_dict(i) for i in d.get("items", [])], bool(d.get("negate")),
+                     id=d.get("id") or _new_id())
     cls = _TYPES[kind]
     known = {f.name for f in fields(cls)}
     return cls(**{k: v for k, v in d.items() if k in known})
@@ -281,7 +293,9 @@ def mask(df: pd.DataFrame, spec: Filter | None) -> np.ndarray:
     if spec is None:
         return _all(df)
     if isinstance(spec, Group):
-        items = [i for i in spec.items if i is not None]
+        # filters that are not set yet (nothing selected) are left out: in an OR group they would
+        # otherwise let every row through
+        items = [i for i in spec.items if i is not None and is_active(i)]
         if not items:
             m = _all(df)
         elif spec.logic == "or":
@@ -319,6 +333,45 @@ def apply_filters(df: pd.DataFrame, *specs: Filter | None) -> pd.DataFrame:
         if spec is not None:
             m &= mask(df, spec)
     return df[m]
+
+
+# ---------------------------------------------------------------- editing a tree of filters
+def new_filter(column: str, kind: str) -> Filter:
+    """An empty filter of the right type for a column kind (it removes nothing until it is set)."""
+    if kind == "number":
+        return NumberFilter(column, "between")
+    if kind in ("date", "year"):
+        return DateFilter(column, "range")
+    if kind == "text":
+        return TextFilter(column)
+    return CategoryFilter(column)
+
+
+def walk(spec: Filter):
+    """Every filter and group in a tree (depth first)."""
+    yield spec
+    if isinstance(spec, Group):
+        for item in spec.items:
+            yield from walk(item)
+
+
+def find(spec: Filter, fid: str):
+    return next((s for s in walk(spec) if s.id == fid), None)
+
+
+def parent_of(root: Group, fid: str) -> Group | None:
+    for s in walk(root):
+        if isinstance(s, Group) and any(i.id == fid for i in s.items):
+            return s
+    return None
+
+
+def remove(root: Group, fid: str) -> bool:
+    parent = parent_of(root, fid)
+    if parent is None:
+        return False
+    parent.items = [i for i in parent.items if i.id != fid]
+    return True
 
 
 # ---------------------------------------------------------------- helpers for the UI

@@ -20,14 +20,16 @@ dependencies = [
 
 [project.optional-dependencies]
 app = ["streamlit>=1.30"]
+dashboard = ["streamlit>=1.46", "plotly>=6"]
 
 [project.scripts]
 chamberviz = "chamberviz.__main__:main"
 
 [tool.setuptools]
-packages = ["chamberviz"]
+packages = ["chamberviz", "chamberstudio"]
 include-package-data = true
 
 [tool.setuptools.package-data]
+chamberstudio = ["regions.json"]
 chamberviz = ["assets/*.json", "assets/fonts/*", "assets/icons/*", "assets/maps/*",
               "assets/flags/round/*", "assets/flags/rect/*", "assets/logos/*", "assets/backgrounds/*"]

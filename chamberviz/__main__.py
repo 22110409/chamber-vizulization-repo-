@@ -7,6 +7,7 @@
   python -m chamberviz flags                        sheet of all flags
   python -m chamberviz logo path/to/logo.png        save your logo as the default
   python -m chamberviz app                          open the upload app in the browser
+  python -m chamberviz dashboard                    open Chamber Studio (Power BI-style dashboard)
 """
 import argparse
 import subprocess
@@ -42,6 +43,9 @@ def main(argv=None):
     p = sub.add_parser("logo", help="save your logo as the default for every chart")
     p.add_argument("path")
     sub.add_parser("app", help="open the Excel upload app (needs: pip install streamlit)")
+    p = sub.add_parser("dashboard", help="open Chamber Studio, the dashboard app (needs streamlit + plotly)")
+    p.add_argument("--port", type=int, default=8501)
+    p.add_argument("--headless", action="store_true", help="do not open a browser")
     a = ap.parse_args(argv)
 
     if a.cmd == "suggest":
@@ -69,6 +73,17 @@ def main(argv=None):
     elif a.cmd == "app":
         app = Path(__file__).with_name("app.py")
         subprocess.run([sys.executable, "-m", "streamlit", "run", str(app)])
+    elif a.cmd == "dashboard":
+        studio = Path(__file__).resolve().parents[1] / "chamberstudio" / "app.py"
+        if not studio.exists():
+            raise SystemExit("Chamber Studio is not installed next to chamberviz (chamberstudio/app.py).")
+        cmd = [sys.executable, "-m", "streamlit", "run", str(studio), "--server.port", str(a.port),
+               "--server.address", "127.0.0.1", "--client.toolbarMode", "minimal",
+               "--theme.primaryColor", "#b8862e",
+               "--browser.gatherUsageStats", "false"]
+        if a.headless:
+            cmd += ["--server.headless", "true"]
+        subprocess.run(cmd)
 
 
 if __name__ == "__main__":

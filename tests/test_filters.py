@@ -123,6 +123,13 @@ def test_or_group_of_and_group(df):
     assert describe(spec) == "(Country: China, Egypt AND Value > 500) OR Sector: Services"
 
 
+def test_unset_filters_are_ignored_in_groups(df):
+    # a filter with nothing chosen yet must not turn an OR group into "every row"
+    spec = Group("or", [CategoryFilter("Sector", ["Services"]), CategoryFilter("Country", [])])
+    assert rows(df, spec) == [4]
+    assert rows(df, Group("or", [CategoryFilter("Country", []), NumberFilter("Value", ">")])) == list(range(7))
+
+
 def test_not_group(df):
     assert rows(df, Group("and", [CategoryFilter("Sector", ["Industry"])], negate=True)) == [1, 2, 4, 6]
 

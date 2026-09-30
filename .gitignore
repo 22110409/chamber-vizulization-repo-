@@ -13,3 +13,6 @@ designs_preview.png
 
 # large generated test data (rebuilt by examples/make_dashboard_sample.py --big)
 examples/*_500k.*
+
+# Chamber Studio uploads and scratch files
+workspace/
