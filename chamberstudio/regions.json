@@ -1,0 +1,27 @@
+{
+  "_about": "Country -> region for the Region > Country drill-down. Each country is in exactly one region (ISO 3166 alpha-2 codes, resolved from English or Arabic names by chamberviz). 'groups' are overlapping sets for filters, e.g. the whole Arab world.",
+  "regions": {
+    "GCC": {"ar": "دول الخليج العربي", "countries": ["SA", "AE", "KW", "QA", "BH", "OM"]},
+    "Levant": {"ar": "بلاد الشام", "countries": ["JO", "SY", "LB", "PS"]},
+    "Other Arab countries": {"ar": "دول عربية أخرى",
+      "countries": ["EG", "IQ", "YE", "LY", "TN", "DZ", "MA", "SD", "MR", "SO", "DJ", "KM", "EH"]},
+    "EU": {"ar": "الاتحاد الأوروبي",
+      "countries": ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV",
+                    "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"]},
+    "Asia": {"ar": "آسيا",
+      "countries": ["CN", "JP", "KR", "KP", "IN", "ID", "MY", "TH", "VN", "PH", "SG", "PK", "BD", "LK", "NP", "BT",
+                    "MV", "AF", "IR", "TR", "IL", "AZ", "AM", "GE", "KZ", "UZ", "TM", "KG", "TJ", "MN", "MM", "KH",
+                    "LA", "BN", "TL", "TW", "HK", "MO"]},
+    "Africa": {"ar": "أفريقيا",
+      "countries": ["NG", "ZA", "ET", "KE", "GH", "TZ", "UG", "CI", "SN", "CM", "AO", "MZ", "MG", "ZM", "ZW", "MW",
+                    "RW", "BI", "BJ", "BF", "ML", "NE", "TD", "TG", "GN", "GW", "SL", "LR", "GM", "CV", "GA", "GQ",
+                    "CG", "CD", "CF", "SS", "ER", "NA", "BW", "LS", "SZ", "MU", "SC", "ST"]},
+    "Americas": {"ar": "الأمريكيتان",
+      "countries": ["US", "CA", "MX", "BR", "AR", "CL", "CO", "PE", "VE", "EC", "BO", "PY", "UY", "GY", "SR", "PA",
+                    "CR", "NI", "HN", "SV", "GT", "BZ", "CU", "DO", "HT", "JM", "TT", "BS", "BB", "PR"]},
+    "Other": {"ar": "دول أخرى", "countries": []}
+  },
+  "groups": {
+    "Arab world": {"ar": "الدول العربية", "regions": ["GCC", "Levant", "Other Arab countries"]}
+  }
+}
