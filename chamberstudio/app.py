@@ -19,6 +19,7 @@ import streamlit as st  # noqa: E402
 
 import chamberviz as cv  # noqa: E402
 from chamberstudio import data, measures, plotly_theme  # noqa: E402
+from chamberstudio import visuals as V  # noqa: E402
 from chamberstudio import filters as F  # noqa: E402
 
 SAMPLE = ROOT / "examples" / "sample_trade_dashboard.xlsx"
@@ -138,8 +139,15 @@ def seed(key, value):
         S[key] = value
 
 
+def filter_roots() -> list:
+    """The page's filters and every visual's own filters."""
+    return [S.page_filter] + [v.filters for v in S.get("visuals", [])]
+
+
 def remove_filter(fid):
-    F.remove(S.page_filter, fid)
+    for root in filter_roots():
+        if F.remove(root, fid):
+            return
 
 
 def select_all(key, options):
@@ -156,13 +164,13 @@ def card_category(f: F.CategoryFilter, df, kinds):
     seed(k, [str(v) for v in f.values if str(v) in opts])
     f.values = st.multiselect("Values", opts, key=k, placeholder="Type to search… (none = all)",
                               label_visibility="collapsed")
-    c1, c2, c3 = st.columns([1, 1, 1.4], vertical_alignment="center")
+    c1, c2 = st.columns(2)
     c1.button("All", key=wkey(f.id, "all"), on_click=select_all, args=(k, opts), width="stretch",
               help="Select every value")
     c2.button("None", key=wkey(f.id, "clear"), on_click=clear_values, args=(k,), width="stretch",
               help="Clear the selection (no selection = every row)")
     seed(wkey(f.id, "exclude"), f.exclude)
-    f.exclude = c3.toggle("Exclude", key=wkey(f.id, "exclude"),
+    f.exclude = st.toggle("Exclude the selected values", key=wkey(f.id, "exclude"),
                           help="Keep every row except the selected values")
     with st.expander("Top / Bottom N", expanded=bool(f.top_n)):
         measures_ = ["(number of rows)"] + [c for c, kd in kinds.items() if kd == "number"]
@@ -299,7 +307,7 @@ def add_filter(select_key, group_id):
     if not column:
         return
     _, kinds = current()
-    group = F.find(S.page_filter, group_id) or S.page_filter
+    group = next((g for g in (F.find(r, group_id) for r in filter_roots()) if g is not None), S.page_filter)
     group.items.append(F.new_filter(column, kinds.get(column, "category")))
     S[select_key] = None
 
@@ -309,8 +317,9 @@ def add_group():
     S.advanced = True
 
 
-def render_group(g: F.Group, df, kinds, depth=0):
-    if depth > 0 or S.advanced:
+def render_group(g: F.Group, df, kinds, depth=0, advanced=None, add_here=False):
+    advanced = S.advanced if advanced is None else advanced
+    if depth > 0 or advanced:
         a, b, c = st.columns([2.2, 1.2, 0.6])
         seed(wkey(g.id, "logic"), g.logic.upper())
         g.logic = a.radio("Match", ["AND", "OR"], key=wkey(g.id, "logic"), horizontal=True,
@@ -326,13 +335,13 @@ def render_group(g: F.Group, df, kinds, depth=0):
             with st.container(border=True):
                 st.markdown(f"<div class='cs-group'><b>Group</b> <span class='cs-muted'>"
                             f"({'any' if item.logic == 'or' else 'all'} of these)</span></div>", unsafe_allow_html=True)
-                render_group(item, df, kinds, depth + 1)
+                render_group(item, df, kinds, depth + 1, advanced)
         else:
             filter_card(item, df, kinds)
-    if depth > 0:
+    if depth > 0 or add_here:
         key = wkey(g.id, "add")
         st.selectbox("Add a filter to this group", list(df.columns), index=None, key=key,
-                     placeholder="＋ Add a filter to this group…",
+                     placeholder="＋ Add a filter to this group…" if depth > 0 else "＋ Add a filter to this visual…",
                      format_func=lambda c: f"{KIND_ICON.get(kinds.get(c), '')} {c}",
                      on_change=add_filter, args=(key, g.id), label_visibility="collapsed")
 
@@ -525,28 +534,254 @@ def calc_panel(df):
             st.rerun()
 
 
-# ================================================================ quick look (until the visual builder)
-def quick_look(df, filtered, kinds):
-    cats = [c for c, k in kinds.items() if k in ("category", "country") and c in df.columns]
-    nums = [c for c, k in kinds.items() if k == "number" and c in df.columns]
-    if not cats:
-        st.info("No category column to chart.")
+# ================================================================ report: visuals
+AGG_NAMES = measures.AGGS
+QUICK_NAMES = measures.QUICK_CALCS
+HIGHLIGHTS = {"max": "Largest", "min": "Smallest", "last": "Last", None: "None"}
+ROWS = "(number of rows)"
+
+
+def vkey(spec, name):
+    return f"v-{spec.id}-{name}"
+
+
+def columns_of(kinds, df, wanted):
+    return [c for c, k in kinds.items() if k in wanted and c in df.columns]
+
+
+def new_visual(df, kinds, kind="bar") -> V.VisualSpec:
+    cats = columns_of(kinds, df, ("country", "category")) or columns_of(kinds, df, ("date", "year"))
+    nums = columns_of(kinds, df, ("number",))
+    return V.VisualSpec(kind, cats[0] if cats else None, nums[0] if nums else None)
+
+
+def add_visual():
+    df, kinds = current()
+    spec = new_visual(df, kinds)
+    S.visuals.append(spec)
+    S.selected = spec.id
+
+
+def add_suggested(spec_dict):
+    spec = V.VisualSpec.from_dict(spec_dict)
+    spec.id = V._new_id()
+    S.visuals.append(spec)
+    S.selected = spec.id
+
+
+def select_visual(vid):
+    S.selected = None if S.get("selected") == vid else vid
+
+
+def delete_visual(vid):
+    S.visuals = [v for v in S.visuals if v.id != vid]
+    if S.get("selected") == vid:
+        S.selected = None
+
+
+def duplicate_visual(vid):
+    i = next(i for i, v in enumerate(S.visuals) if v.id == vid)
+    copy = V.VisualSpec.from_dict(S.visuals[i].to_dict())
+    copy.id = V._new_id()
+    for s in F.walk(copy.filters):
+        s.id = F._new_id()
+    S.visuals.insert(i + 1, copy)
+
+
+def move_visual(vid, step):
+    i = next(i for i, v in enumerate(S.visuals) if v.id == vid)
+    j = i + step
+    if 0 <= j < len(S.visuals):
+        S.visuals[i], S.visuals[j] = S.visuals[j], S.visuals[i]
+
+
+def drill_into(vid, key):
+    df, kinds = current()
+    spec = next(v for v in S.visuals if v.id == vid)
+    value = S.get(key)
+    if value:
+        V.drill_down(F.apply_filters(df, S.page_filter), spec, kinds, value)
+    S[key] = None
+
+
+def drill_up(vid):
+    df, kinds = current()
+    spec = next(v for v in S.visuals if v.id == vid)
+    V.drill_up(df, spec, kinds)
+
+
+def visual_card(spec: V.VisualSpec, filtered, kinds):
+    selected = S.get("selected") == spec.id
+    with st.container(border=True):
+        head = st.columns([6, 1, 1, 1, 1], vertical_alignment="center")
+        head[0].markdown(f"{V.ICONS.get(spec.type, '')} **{V.auto_title(spec) if not spec.title else spec.title}**"
+                         + ("  <span class='cs-muted'>· editing</span>" if selected else ""), unsafe_allow_html=True)
+        head[1].button("", icon=":material/edit:", key=vkey(spec, "edit"), on_click=select_visual, args=(spec.id,),
+                       type="primary" if selected else "tertiary", help="Settings of this visual")
+        head[2].button("", icon=":material/content_copy:", key=vkey(spec, "dup"), on_click=duplicate_visual,
+                       args=(spec.id,), type="tertiary", help="Duplicate")
+        head[3].button("", icon=":material/arrow_upward:", key=vkey(spec, "up"), on_click=move_visual,
+                       args=(spec.id, -1), type="tertiary", help="Move earlier")
+        head[4].button("", icon=":material/delete:", key=vkey(spec, "del"), on_click=delete_visual,
+                       args=(spec.id,), type="tertiary", help="Delete")
+        try:
+            table, meta = V.prepare(filtered, spec, kinds)
+        except Exception as exc:
+            st.info(f"{exc}")
+            return
+        if V.hierarchy(spec, kinds):
+            d1, d2, d3 = st.columns([0.5, 2.6, 2.2], vertical_alignment="center")
+            d1.button("", icon=":material/undo:", key=vkey(spec, "drillup"), on_click=drill_up, args=(spec.id,),
+                      type="tertiary",
+                      disabled=not spec.path and V.hierarchy(spec, kinds).index(meta.level or V.hierarchy(spec, kinds)[0]) == 0,
+                      help="Drill up: back to the level above")
+            d2.markdown(f"<span class='cs-muted'>{V.breadcrumb(spec, kinds, filtered)}</span>", unsafe_allow_html=True)
+            if V.can_drill_down(filtered, spec, kinds):
+                key = vkey(spec, "drill")
+                d3.selectbox("Drill into", table[meta.category].astype(str).tolist(), index=None, key=key,
+                             placeholder="⤵ Drill into…", on_change=drill_into, args=(spec.id, key),
+                             label_visibility="collapsed")
+        if F.is_active(spec.filters):
+            st.markdown(f"<span class='cs-muted'>🔎 this visual only: {F.describe(spec.filters)}</span>",
+                        unsafe_allow_html=True)
+        if spec.type == "table":
+            show = table.rename(columns={"value": meta.value_label})
+            st.dataframe(show, hide_index=True, width="stretch", height=360)
+            return
+        fig = V.to_plotly(table, spec, meta, S.design, height=380 if S.grid > 1 else 460, show_title=False)
+        st.plotly_chart(fig, width="stretch", theme=None, key=vkey(spec, "chart"),
+                        config={"displaylogo": False, "modeBarButtonsToRemove": ["lasso2d", "select2d"]})
+
+
+def settings_panel(spec: V.VisualSpec, df, filtered, kinds):
+    st.markdown(f"### {V.ICONS.get(spec.type, '')} Visual settings")
+    cats = columns_of(kinds, df, ("country", "category", "date", "year", "text"))
+    nums = columns_of(kinds, df, ("number",))
+
+    def pick(label, name, options, current, fmt=None, help=None, allow_none=False):
+        opts = ([None] if allow_none else []) + list(options)
+        seed(vkey(spec, name), current if current in opts else (opts[0] if opts else None))
+        return st.selectbox(label, opts, key=vkey(spec, name), format_func=fmt or (lambda o: "—" if o is None else str(o)),
+                            help=help)
+
+    kind = pick("Chart type", "type", list(V.TYPES), spec.type, fmt=lambda t: f"{V.ICONS[t]} {V.TYPES[t]}")
+    if kind != spec.type:
+        spec.type = kind
+    seed(vkey(spec, "title"), spec.title)
+    spec.title = st.text_input("Title", key=vkey(spec, "title"), placeholder=V.auto_title(spec))
+    seed(vkey(spec, "subtitle"), spec.subtitle)
+    spec.subtitle = st.text_input("Subtitle", key=vkey(spec, "subtitle"), placeholder="e.g. JD thousand · 2025")
+
+    st.markdown("**Fields**")
+    if kind == "kpi":
+        spec.category = pick("Compare with last year using", "cat", columns_of(kinds, df, ("date", "year")),
+                             spec.category, allow_none=True, help="A date / year column: shows the change on last year")
+    else:
+        label = {"scatter": "Points (one per)", "donut": "Slices", "treemap": "Boxes", "map": "Countries",
+                 "flowmap": "Countries"}.get(kind, "Axis / category")
+        cat = pick(label, "cat", cats, spec.category)
+        if cat != spec.category:
+            spec.category, spec.level, spec.path = cat, None, []
+    a, b = st.columns([1.4, 1])
+    seed(vkey(spec, "value"), spec.value if spec.value in nums else ROWS)
+    value = a.selectbox("Value" if kind != "scatter" else "Y value", [ROWS, *nums], key=vkey(spec, "value"))
+    spec.value = None if value == ROWS else value
+    seed(vkey(spec, "agg"), spec.agg)
+    spec.agg = b.selectbox("Measure", list(AGG_NAMES), format_func=AGG_NAMES.get, key=vkey(spec, "agg"),
+                           disabled=spec.value is None)
+    none = lambda o: "—" if o is None else str(o)  # noqa: E731
+    if kind == "scatter" and nums:
+        a, b = st.columns(2)
+        seed(vkey(spec, "x"), spec.x_value if spec.x_value in nums else nums[min(1, len(nums) - 1)])
+        spec.x_value = a.selectbox("X value", nums, key=vkey(spec, "x"))
+        seed(vkey(spec, "size"), spec.size if spec.size in nums else None)
+        spec.size = b.selectbox("Bubble size", [None, *nums], format_func=none, key=vkey(spec, "size"))
+    if kind in V.MULTI:
+        options = [None, *[c for c in cats if c != spec.category]]
+        if S.get(vkey(spec, "legend")) not in options:   # the axis changed: the old legend may be gone
+            S.pop(vkey(spec, "legend"), None)
+        seed(vkey(spec, "legend"), spec.legend if spec.legend in options else None)
+        spec.legend = st.selectbox("Legend (one series per value)", options, format_func=none, key=vkey(spec, "legend"))
+    if kind == "flowmap":
+        seed(vkey(spec, "hub"), spec.hub)
+        spec.hub = st.text_input("Centre country", key=vkey(spec, "hub"))
+
+    levels = V.hierarchy(spec, kinds)
+    if levels and kind != "kpi":
+        current_level = V.level_of(filtered, spec, kinds)
+        lvl = st.segmented_control("Level", levels, default=current_level, key=vkey(spec, f"level-{len(spec.path)}"),
+                                   format_func=lambda l: V.LEVEL_NAMES[l],
+                                   help="Year › Quarter › Month › Date, or Region › Country")
+        if lvl and lvl != current_level:
+            V.set_level(spec, lvl)
+            st.rerun()
+
+    if kind not in ("kpi",):
+        st.markdown("**Order and size**")
+        a, b = st.columns(2)
+        seed(vkey(spec, "sort"), spec.sort)
+        spec.sort = a.selectbox("Sort", list(V.SORTS), format_func=V.SORTS.get, key=vkey(spec, "sort"))
+        seed(vkey(spec, "top"), int(spec.top_n or 0))
+        top = b.number_input("Top N (0 = all)", min_value=0, max_value=500, step=1, key=vkey(spec, "top"))
+        spec.top_n = int(top) or None
+        if spec.top_n:
+            seed(vkey(spec, "other"), spec.other)
+            spec.other = st.toggle("Add the rest up as “Other”", key=vkey(spec, "other"))
+        a, b = st.columns([1.6, 1])
+        seed(vkey(spec, "quick"), spec.quick)
+        spec.quick = a.selectbox("Quick calculation", list(QUICK_NAMES), format_func=QUICK_NAMES.get,
+                                 key=vkey(spec, "quick"), help="% of total, change on last year, running total, rank, "
+                                                                 "moving average")
+        if spec.quick == "moving_avg":
+            seed(vkey(spec, "window"), spec.window)
+            spec.window = int(b.number_input("Window", min_value=2, max_value=24, key=vkey(spec, "window")))
+        if kind in ("bar", "hbar"):
+            seed(vkey(spec, "hi"), spec.highlight)
+            spec.highlight = b.selectbox("Highlight", list(HIGHLIGHTS), format_func=HIGHLIGHTS.get, key=vkey(spec, "hi"))
+
+    with st.expander("🔎 Filters for this visual only", expanded=F.is_active(spec.filters)):
+        render_group(spec.filters, df, kinds, depth=0, advanced=False, add_here=True)
+    st.button("Done", on_click=select_visual, args=(spec.id,), width="stretch")
+
+
+def report_tab(df, filtered, kinds):
+    S.setdefault("visuals", [])
+    S.setdefault("grid", 2)
+    bar = st.columns([1.2, 1.4, 3, 1.6], vertical_alignment="center")
+    bar[0].button("＋ Add visual", on_click=add_visual, type="primary", width="stretch")
+    if bar[1].button("✨ Suggest for me", width="stretch", help="Chart ideas for the filtered data (cv.suggest)"):
+        with st.spinner("Looking at the data…"):
+            S.suggestions = [s.to_dict() for s in V.suggest(filtered.head(20000))]
+    S.grid = bar[3].segmented_control("Columns", [1, 2, 3], default=S.grid, key="grid-cols",
+                                      format_func=lambda n: f"{n} col", label_visibility="collapsed") or S.grid
+    if S.get("suggestions"):
+        with st.container(border=True):
+            top = st.columns([6, 1])
+            top[0].markdown("**✨ Suggested for the filtered data** · click to add")
+            if top[1].button("Close", key="sug-close", type="tertiary"):
+                S.suggestions = []
+                st.rerun()
+            cols = st.columns(4)
+            for i, sd in enumerate(S.suggestions):
+                sp = V.VisualSpec.from_dict(sd)
+                cols[i % 4].button(f"{V.ICONS.get(sp.type, '')} {sp.title or V.auto_title(sp)}", key=f"sug-{i}",
+                                   on_click=add_suggested, args=(sd,), width="stretch",
+                                   help=f"{V.TYPES[sp.type]}: {sp.value or 'rows'} by {sp.category}")
+    if not S.visuals:
+        st.info("No visuals yet: click **＋ Add visual** or **✨ Suggest for me**.")
         return
-    a, b, c = st.columns(3)
-    cat = a.selectbox("By", cats, key="ql-cat")
-    num = b.selectbox("Value", ["(number of rows)", *nums], index=1 if nums else 0, key="ql-num")
-    agg = c.selectbox("Measure", list(measures.AGGS), format_func=measures.AGGS.get, key="ql-agg")
-    value = None if num.startswith("(") else num
-    t = measures.aggregate(filtered, cat, value, agg if value else "count")
-    t = measures.sort_table(measures.top_n_other(t, cat, 12, keep_other=False), cat, "desc")
-    fig = go.Figure(go.Bar(x=t[cat].astype(str), y=t["value"],
-                           marker_color=plotly_theme.highlight_colors(S.design, t["value"].tolist()),
-                           hovertemplate="%{x}<br>%{y:,.1f}<extra></extra>"))
-    plotly_theme.apply(fig, S.design)
-    fig.update_layout(height=460,
-                      title=f"{measures.AGGS[agg] if value else 'Rows'} of {value or 'rows'} by {cat} (top 12)")
-    st.plotly_chart(fig, width="stretch", key="ql-chart", theme=None)   # theme=None: keep the design's template
-    st.caption("A first look at the filtered data in the chosen design. The visual builder comes in stage 3.")
+    selected = next((v for v in S.visuals if v.id == S.get("selected")), None)
+    canvas, panel = (st.columns([2.6, 1.15], gap="medium") if selected else (st.container(), None))
+    with canvas:
+        n = max(1, S.grid - 1) if selected else S.grid     # the settings panel takes room: one column less
+        grid = st.columns(n, gap="small")
+        for i, spec in enumerate(S.visuals):
+            with grid[i % n]:
+                visual_card(spec, filtered, kinds)
+    if selected:
+        with panel:
+            with st.container(border=True):
+                settings_panel(selected, df, filtered, kinds)
 
 
 # ================================================================ page
@@ -580,14 +815,14 @@ def main():
         chips(df)
         if error:
             st.warning(f"A filter could not be applied: {error}")
-    data_t, look_t = st.tabs(["📁 Data", "📈 Quick look"])
+    data_t, report_t = st.tabs(["📁 Data", "📊 Report"])
     with data_t:
         data_tab(df, kinds, filtered)
-    with look_t:
+    with report_t:
         if df is None:
             st.info("Load data first.")
         else:
-            quick_look(df, filtered, kinds)
+            report_tab(df, filtered, kinds)
 
 
 main()
