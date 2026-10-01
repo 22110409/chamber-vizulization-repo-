@@ -610,6 +610,83 @@ def drill_up(vid):
     V.drill_up(df, spec, kinds)
 
 
+def chart_key(spec):
+    """A new key generation clears every chart's click selection (Streamlit cannot reset it otherwise)."""
+    return f"v-{spec.id}-chart-{S.get('sel_gen', 0)}"
+
+
+def reset_chart_selections():
+    S.sel_gen = S.get("sel_gen", 0) + 1
+    S.sel_seen = {}
+
+
+def clear_selection():
+    S.selection = None
+    reset_chart_selections()
+
+
+def _points(state) -> list:
+    try:
+        return list(state["selection"]["points"])
+    except (KeyError, TypeError):
+        return []
+
+
+def process_clicks(filtered, kinds):
+    """Turn the newest click in any chart into the page's selection (or a drill-down)."""
+    for spec in S.visuals:
+        state = S.get(chart_key(spec))
+        if state is None:          # this chart has not been clicked since it was drawn
+            continue
+        pts = _points(state)
+        sig = json.dumps(sorted(json.dumps(p, sort_keys=True, default=str) for p in pts))
+        seen = S.sel_seen.get(spec.id)
+        if seen == sig:
+            continue
+        S.sel_seen[spec.id] = sig
+        if not pts and seen is None:
+            continue   # a chart that was just drawn starts with an empty selection: not a click
+        try:
+            table, meta = V.prepare(filtered, spec, kinds)
+        except Exception:
+            continue
+        sel = V.selection_from_points(spec, table, meta, pts)
+        if sel is None:
+            if S.selection and S.selection["visual"] == spec.id:   # clicked away: selection cleared
+                S.selection = None
+            continue
+        if S.get("click_drill") and len(sel["values"]) == 1 and V.can_drill_down(filtered, spec, kinds):
+            V.drill_down(filtered, spec, kinds, sel["values"][0])
+            if S.selection and S.selection["visual"] == spec.id:
+                S.selection = None
+        else:
+            S.selection = sel
+        reset_chart_selections()
+        st.rerun()
+
+
+def select_from_picker(vid, key):
+    """The '🎯 Select…' picker of donuts / treemaps: the same selection a click on a bar gives."""
+    df, kinds = current()
+    filtered = F.apply_filters(df, S.page_filter)
+    spec = next(v for v in S.visuals if v.id == vid)
+    values = S.get(key) or []
+    if not values:
+        if S.selection and S.selection["visual"] == vid:
+            S.selection = None
+        return
+    table, meta = V.prepare(filtered, spec, kinds)
+    S.selection = V.selection_from_points(spec, table, meta, [{"customdata": v} for v in values])
+
+
+def data_for(spec, filtered):
+    """Every visual except the one clicked is filtered by the selection."""
+    sel = S.get("selection")
+    if not sel or sel["visual"] == spec.id:
+        return filtered
+    return filtered[V.selection_mask(filtered, sel)]
+
+
 def visual_card(spec: V.VisualSpec, filtered, kinds):
     selected = S.get("selected") == spec.id
     with st.container(border=True):
@@ -629,7 +706,7 @@ def visual_card(spec: V.VisualSpec, filtered, kinds):
         except Exception as exc:
             st.info(f"{exc}")
             return
-        if V.hierarchy(spec, kinds):
+        if V.hierarchy(spec, kinds) and spec.type not in ("kpi",):   # a KPI uses its date column only to compare
             d1, d2, d3 = st.columns([0.5, 2.6, 2.2], vertical_alignment="center")
             d1.button("", icon=":material/undo:", key=vkey(spec, "drillup"), on_click=drill_up, args=(spec.id,),
                       type="tertiary",
@@ -644,13 +721,27 @@ def visual_card(spec: V.VisualSpec, filtered, kinds):
         if F.is_active(spec.filters):
             st.markdown(f"<span class='cs-muted'>🔎 this visual only: {F.describe(spec.filters)}</span>",
                         unsafe_allow_html=True)
+        if spec.type in V.NOT_CLICKABLE:
+            key = f"{vkey(spec, 'pick')}-{S.get('sel_gen', 0)}"
+            sel = S.get("selection")
+            mine = sel["values"] if sel and sel["visual"] == spec.id else []
+            options = [x for x in table[meta.category].astype(str) if x != V.OTHER]
+            seed(key, [m for m in mine if m in options])
+            st.multiselect("🎯 Select", options, key=key, placeholder="🎯 Select slices to filter the other visuals…",
+                           on_change=select_from_picker, args=(spec.id, key), label_visibility="collapsed")
         if spec.type == "table":
             show = table.rename(columns={"value": meta.value_label})
             st.dataframe(show, hide_index=True, width="stretch", height=360)
             return
-        fig = V.to_plotly(table, spec, meta, S.design, height=380 if S.grid > 1 else 460, show_title=False)
-        st.plotly_chart(fig, width="stretch", theme=None, key=vkey(spec, "chart"),
-                        config={"displaylogo": False, "modeBarButtonsToRemove": ["lasso2d", "select2d"]})
+        sel = S.get("selection")
+        mine = sel["values"] if sel and sel["visual"] == spec.id else None
+        fig = V.to_plotly(table, spec, meta, S.design, height=380 if S.grid > 1 else 460, show_title=False,
+                          selected=mine)
+        selectable = spec.type not in ("kpi",)
+        st.plotly_chart(fig, width="stretch", theme=None, key=chart_key(spec),
+                        on_select="rerun" if selectable else "ignore",
+                        selection_mode=("points", "box", "lasso") if spec.type == "scatter" else ("points",),
+                        config={"displaylogo": False})
 
 
 def settings_panel(spec: V.VisualSpec, df, filtered, kinds):
@@ -747,6 +838,12 @@ def settings_panel(spec: V.VisualSpec, df, filtered, kinds):
 def report_tab(df, filtered, kinds):
     S.setdefault("visuals", [])
     S.setdefault("grid", 2)
+    S.setdefault("selection", None)
+    S.setdefault("sel_seen", {})
+    S.setdefault("sel_gen", 0)
+    if S.selection and not any(v.id == S.selection["visual"] for v in S.visuals):
+        S.selection = None
+    process_clicks(filtered, kinds)
     bar = st.columns([1.2, 1.4, 3, 1.6], vertical_alignment="center")
     bar[0].button("＋ Add visual", on_click=add_visual, type="primary", width="stretch")
     if bar[1].button("✨ Suggest for me", width="stretch", help="Chart ideas for the filtered data (cv.suggest)"):
@@ -770,6 +867,19 @@ def report_tab(df, filtered, kinds):
     if not S.visuals:
         st.info("No visuals yet: click **＋ Add visual** or **✨ Suggest for me**.")
         return
+    sel_row = st.columns([5, 1.3, 1.7], vertical_alignment="center")
+    if S.selection:
+        rows = int(V.selection_mask(filtered, S.selection).sum())
+        sel_row[0].markdown(f"<div class='cs-count'>🎯 Selected in <b>{S.selection['title']}</b>: "
+                            f"{V.describe_selection(S.selection)} · the other visuals show {rows:,} rows</div>",
+                            unsafe_allow_html=True)
+        sel_row[1].button("✕ Clear selection", on_click=clear_selection, width="stretch")
+    else:
+        sel_row[0].markdown("<span class='cs-muted'>Click a bar, slice, point or country to filter the other "
+                            "visuals.</span>", unsafe_allow_html=True)
+    sel_row[2].toggle("Click drills down", key="click_drill",
+                      help="On: clicking a bar of a chart with levels (Year › Quarter › Month, Region › Country) "
+                           "opens it instead of filtering the other visuals")
     selected = next((v for v in S.visuals if v.id == S.get("selected")), None)
     canvas, panel = (st.columns([2.6, 1.15], gap="medium") if selected else (st.container(), None))
     with canvas:
@@ -777,7 +887,7 @@ def report_tab(df, filtered, kinds):
         grid = st.columns(n, gap="small")
         for i, spec in enumerate(S.visuals):
             with grid[i % n]:
-                visual_card(spec, filtered, kinds)
+                visual_card(spec, data_for(spec, filtered), kinds)
     if selected:
         with panel:
             with st.container(border=True):

@@ -31,6 +31,7 @@ TYPES = {"bar": "Bar", "hbar": "Horizontal bar", "grouped": "Grouped bars", "sta
 ICONS = {"bar": "📊", "hbar": "📶", "grouped": "📊", "stacked": "🧱", "line": "📈", "area": "🏔️", "donut": "🍩",
          "treemap": "🟩", "scatter": "✳️", "map": "🗺️", "flowmap": "🛫", "kpi": "🔢", "table": "📋"}
 MULTI = {"grouped", "stacked", "line", "area", "table"}      # can split by a legend
+NOT_CLICKABLE = {"donut", "treemap"}   # Plotly does not report selections on these: the app offers a picker
 TIME_LEVELS = ["year", "quarter", "month", "date"]
 GEO_LEVELS = ["region", "country"]
 LEVEL_NAMES = {"year": "Year", "quarter": "Quarter", "month": "Month", "date": "Date", "region": "Region",
@@ -281,7 +282,7 @@ def _series(table, meta, spec):
 
 
 def to_plotly(table: pd.DataFrame, spec: VisualSpec, meta: Meta, design: str, height: int = 420,
-              show_title: bool = True) -> go.Figure:
+              show_title: bool = True, selected: list | None = None) -> go.Figure:
     c = PT.colors(design)
     cat = meta.category
     fig = go.Figure()
@@ -349,6 +350,8 @@ def to_plotly(table: pd.DataFrame, spec: VisualSpec, meta: Meta, design: str, he
                                                  if ref else ""), font=dict(size=15))))
         height = min(height, 220)
     PT.apply(fig, design)
+    if selected:
+        _dim_unselected(fig, [str(v) for v in selected])
     titled = show_title and t != "kpi"
     fig.update_layout(title=dict(text=auto_title(spec, meta) if titled else None), height=height,
                       margin=dict(l=40, r=20, t=60 if titled else (36 if t != "kpi" else 20), b=40),
@@ -363,6 +366,23 @@ def to_plotly(table: pd.DataFrame, spec: VisualSpec, meta: Meta, design: str, he
         fig.update_layout(margin=dict(l=10))
         fig.update_yaxes(type="category", automargin=True)
     return fig
+
+
+def _dim_unselected(fig: go.Figure, selected: list[str]) -> None:
+    """Power BI style: the selected bars / slices stay bright, the others fade."""
+    for tr in fig.data:
+        cd = list(tr.customdata) if getattr(tr, "customdata", None) is not None else None
+        if not cd:
+            continue
+        on = [str(c[0] if isinstance(c, (list, tuple)) else c) in selected for c in cd]
+        if tr.type == "pie":
+            tr.pull = [0.08 if o else 0 for o in on]
+            tr.marker.line.width = 2
+        elif tr.type in ("bar", "scatter", "scattergeo"):
+            tr.marker.opacity = [1.0 if o else 0.28 for o in on]
+        elif tr.type == "choropleth":
+            tr.marker.opacity = 1.0
+            tr.z = [z if o else None for z, o in zip(tr.z, on)]
 
 
 def _geo(fig, table, spec, meta, design):
@@ -505,3 +525,57 @@ def suggest(df: pd.DataFrame, top: int = 8) -> list[VisualSpec]:
         if len(out) >= top:
             break
     return out
+
+
+# ---------------------------------------------------------------- cross-filtering
+def series_names(table: pd.DataFrame, meta: Meta, spec: VisualSpec) -> list[str]:
+    """Trace names in the order to_plotly draws them (curve_number -> legend value)."""
+    return list(_series(table, meta, spec))
+
+
+def selection_from_points(spec: VisualSpec, table: pd.DataFrame, meta: Meta, points: list[dict]) -> dict | None:
+    """Clicked / selected points of a chart -> a selection that can filter the other visuals.
+    Points are Plotly selection points (customdata holds the category label)."""
+    if not points or spec.type in ("kpi", "table") or not spec.category:
+        return None
+    labels = set(table[meta.category].astype(str)) if meta.category in table.columns else set()
+    values, legend_values = [], []
+    names = series_names(table, meta, spec) if spec.legend in table.columns else []
+    for p in points:
+        cd = p.get("customdata")
+        if isinstance(cd, (list, tuple)):
+            cd = cd[0] if cd else None
+        label = next((str(v) for v in (cd, p.get("label"), p.get("x") if spec.type != "hbar" else p.get("y"))
+                      if v is not None and str(v) in labels), None)
+        if label is None or label == OTHER:
+            continue
+        if label not in values:
+            values.append(label)
+        curve = p.get("curve_number")
+        if names and curve is not None and 0 <= curve < len(names) and names[curve] not in legend_values:
+            legend_values.append(names[curve])
+    if not values:
+        return None
+    return {"visual": spec.id, "title": auto_title(spec, meta), "column": spec.category, "level": meta.level,
+            "values": values, "legend": spec.legend if legend_values else None, "legend_values": legend_values}
+
+
+def selection_mask(df: pd.DataFrame, sel: dict | None) -> np.ndarray:
+    """Rows that belong to the selected bars / slices (at the level they were clicked at)."""
+    if not sel or sel.get("column") not in df.columns:
+        return np.ones(len(df), dtype=bool)
+    level = sel.get("level")
+    s = _level_series(df, sel["column"], level) if level else df[sel["column"]].astype("string")
+    m = np.array(s.isin([str(v) for v in sel["values"]]).to_numpy(dtype=bool, na_value=False))  # writable
+    if sel.get("legend") and sel.get("legend_values") and sel["legend"] in df.columns:
+        m &= df[sel["legend"]].astype("string").isin(sel["legend_values"]).to_numpy(dtype=bool, na_value=False)
+    return m
+
+
+def describe_selection(sel: dict) -> str:
+    vals = sel["values"]
+    shown = ", ".join(vals[:3]) + (f" +{len(vals) - 3}" if len(vals) > 3 else "")
+    name = LEVEL_NAMES.get(sel.get("level"), sel.get("level"))
+    level = f" ({name})" if sel.get("level") and str(name).lower() != str(sel["column"]).lower() else ""
+    extra = f" · {sel['legend']}: {', '.join(sel['legend_values'])}" if sel.get("legend") else ""
+    return f"{sel['column']}{level}: {shown}{extra}"

@@ -28,5 +28,11 @@ def test_load_sample_and_build_visuals():
     at.selectbox(key=f"v-{at.session_state['visuals'][-1].id}-type").set_value("line").run()
     at.selectbox(key=f"v-{at.session_state['visuals'][-1].id}-cat").set_value("Month").run()
     assert not at.exception
+    # a KPI card that compares with last year (it has a date column but no drill-down)
+    button(at, "＋ Add visual").click().run()
+    vid = at.session_state["visuals"][-1].id
+    at.selectbox(key=f"v-{vid}-type").set_value("kpi").run()
+    at.selectbox(key=f"v-{vid}-cat").set_value("Month").run()
+    assert not at.exception
     button(at, "✨ Suggest for me").click().run()
     assert not at.exception and at.session_state["suggestions"]

@@ -148,3 +148,44 @@ def test_round_trip():
                         path=[["year", "2025"]], filters=F.Group("or", [F.CategoryFilter("Country", ["China"])]))
     again = V.VisualSpec.from_dict(spec.to_dict())
     assert again.to_dict() == spec.to_dict()
+
+
+# ---------------------------------------------------------------- cross-filtering
+def test_selection_from_clicked_points(trade):
+    df, kinds = trade
+    spec = V.VisualSpec("bar", "Country", "Value", top_n=5)
+    table, meta = V.prepare(df, spec, kinds)
+    sel = V.selection_from_points(spec, table, meta, [{"customdata": "China", "curve_number": 0}, {"x": "Other"}])
+    assert sel["values"] == ["China"] and sel["level"] == "country"      # 'Other' cannot be selected
+    m = V.selection_mask(df, sel)
+    assert m.sum() == (df.Country == "China").sum()
+
+
+def test_selection_at_a_drill_level_and_with_a_legend(trade):
+    df, kinds = trade
+    spec = V.set_level(V.VisualSpec("grouped", "Month", "Value", legend="Flow"), "year")
+    table, meta = V.prepare(df, spec, kinds)
+    names = V.series_names(table, meta, spec)
+    sel = V.selection_from_points(spec, table, meta, [{"x": "2024", "curve_number": names.index("Exports")}])
+    assert sel["values"] == ["2024"] and sel["legend_values"] == ["Exports"]
+    m = V.selection_mask(df, sel)
+    assert m.sum() == ((df.Month.dt.year == 2024) & (df.Flow == "Exports")).sum()
+    assert V.describe_selection(sel) == "Month (Year): 2024 · Flow: Exports"
+
+
+def test_region_selection_filters_countries(trade):
+    df, kinds = trade
+    spec = V.set_level(V.VisualSpec("donut", "Country", "Value"), "region")
+    table, meta = V.prepare(df, spec, kinds)
+    sel = V.selection_from_points(spec, table, meta, [{"label": "Levant"}])
+    got = set(df[V.selection_mask(df, sel)].Country)
+    assert got == {"Syria", "Lebanon", "Palestine"}
+
+
+def test_selected_bars_are_highlighted(trade):
+    df, kinds = trade
+    spec = V.VisualSpec("bar", "Flow", "Value")
+    table, meta = V.prepare(df, spec, kinds)
+    fig = V.to_plotly(table, spec, meta, "navy_gold", selected=["Exports"])
+    labels = list(fig.data[0].customdata)
+    assert [o for o in fig.data[0].marker.opacity] == [1.0 if l == "Exports" else 0.28 for l in labels]
