@@ -20,10 +20,12 @@ import streamlit as st  # noqa: E402
 import chamberviz as cv  # noqa: E402
 from chamberstudio import data, measures, plotly_theme  # noqa: E402
 from chamberstudio import visuals as V  # noqa: E402
+from chamberstudio import dashboard as D  # noqa: E402
 from chamberstudio import filters as F  # noqa: E402
 
 SAMPLE = ROOT / "examples" / "sample_trade_dashboard.xlsx"
 UPLOADS = ROOT / "workspace" / "uploads"
+DASHBOARDS = ROOT / "dashboards"
 KIND_ICON = {"category": "🏷️", "country": "🌍", "number": "🔢", "date": "📅", "year": "📅", "text": "🔤"}
 NUMBER_OPS = {"between": "between", ">": ">", ">=": "≥", "<": "<", "<=": "≤", "=": "=", "!=": "≠",
               "empty": "is empty", "not_empty": "is not empty"}
@@ -55,6 +57,188 @@ S.setdefault("calcs", [])              # [{"name", "formula"}]
 S.setdefault("page_filter", F.Group("and"))
 S.setdefault("advanced", False)
 S.setdefault("design", "navy_gold")
+S.setdefault("visuals", [])            # the current page's visuals ...
+S.setdefault("kpis", [])               # ... its KPI row ...
+S.setdefault("grid", 2)                # ... and its number of columns
+S.setdefault("title", "Trade dashboard")
+S.setdefault("missing", [])            # data files a loaded dashboard could not find
+
+
+# ================================================================ pages
+def ensure_pages():
+    if "pages" not in S:
+        page = D.Page("Page 1", filters=S.page_filter, kpis=S.kpis, visuals=S.visuals, grid=S.grid)
+        S.pages, S.page_id = [page], page.id
+
+
+def cur_page() -> D.Page:
+    return next((p for p in S.pages if p.id == S.page_id), S.pages[0])
+
+
+def store_page():
+    """The page on screen lives in S.page_filter / S.visuals / S.kpis / S.grid: copy it back."""
+    page = cur_page()
+    page.filters, page.visuals, page.kpis, page.grid = S.page_filter, S.visuals, S.kpis, S.grid
+
+
+def show_page(pid):
+    store_page()
+    S.page_id = pid
+    page = cur_page()
+    S.page_filter, S.visuals, S.kpis, S.grid = page.filters, page.visuals, page.kpis, page.grid
+    S.selection, S.selected = None, None
+    S.sel_gen = S.get("sel_gen", 0) + 1
+    S.sel_seen = {}
+
+
+def on_page_pick():
+    pid = S.get(f"page-pick-{S.get('pages_gen', 0)}")
+    if pid and pid != S.page_id:
+        show_page(pid)
+
+
+def add_page():
+    store_page()
+    page = D.Page(f"Page {len(S.pages) + 1}")
+    S.pages.append(page)
+    S.pages_gen = S.get("pages_gen", 0) + 1
+    show_page(page.id)
+
+
+def rename_page():
+    name = (S.get("page-rename") or "").strip()
+    if name:
+        cur_page().name = name
+        S.pages_gen = S.get("pages_gen", 0) + 1
+
+
+def delete_page():
+    if len(S.pages) < 2:
+        return
+    gone = S.page_id
+    S.pages = [p for p in S.pages if p.id != gone]
+    S.page_id = S.pages[0].id
+    page = cur_page()
+    S.page_filter, S.visuals, S.kpis, S.grid = page.filters, page.visuals, page.kpis, page.grid
+    S.selection, S.selected = None, None
+    S.pages_gen = S.get("pages_gen", 0) + 1
+
+
+# ================================================================ save / open a dashboard
+def fresh_spec_ids(spec):
+    """New ids for a loaded visual (old widget values in this session must not leak in)."""
+    spec.id = V._new_id()
+    for f in F.walk(spec.filters):
+        f.id = F._new_id()
+    return spec
+
+
+def to_dashboard() -> D.Dashboard:
+    store_page()
+    src = S.source or {}
+    path = S.files.get(src.get("file")) if src else None
+    join = None
+    if S.join and S.join.get("file") in S.files:
+        join = {"path": S.files[S.join["file"]], "sheet": S.join["sheet"], "left_on": S.join["left_on"],
+                "right_on": S.join["right_on"]}
+    return D.Dashboard(S.title, S.design, D.DataSource(path, src.get("sheet"), S.schemas.get(source_key(src), {})
+                                                       if src else {}, join, list(S.calcs)),
+                       S.pages, S.page_id)
+
+
+def apply_dashboard(dash: D.Dashboard):
+    """Put a loaded dashboard on screen (in a callback: before the widgets are drawn)."""
+    for page in dash.pages:
+        for f in F.walk(page.filters):
+            f.id = F._new_id()
+        page.visuals = [fresh_spec_ids(v) for v in page.visuals]
+        page.kpis = [fresh_spec_ids(k) for k in page.kpis]
+    S.title, S.design = dash.title, dash.design
+    S["dash-title"] = dash.title
+    d = dash.data
+    if d.path:
+        name = Path(d.path).name
+        S.files[name] = d.path
+        S.source = {"file": name, "sheet": d.sheet}
+        S.schemas[source_key(S.source)] = d.schema
+    S.join = None
+    if d.join and d.join.get("path"):
+        jname = Path(d.join["path"]).name
+        S.files[jname] = d.join["path"]
+        S.join = {"file": jname, "sheet": d.join["sheet"], "left_on": d.join["left_on"], "right_on": d.join["right_on"]}
+    S.calcs = list(d.calcs)
+    S.missing = list(dash.missing)
+    S.pages = dash.pages
+    S.page_id = dash.current_page or dash.pages[0].id
+    page = cur_page()
+    S.page_filter, S.visuals, S.kpis, S.grid = page.filters, page.visuals, page.kpis, page.grid
+    S.selection, S.selected, S.suggestions = None, None, []
+    S.sel_gen = S.get("sel_gen", 0) + 1
+    S.sel_seen = {}
+    S.pages_gen = S.get("pages_gen", 0) + 1
+
+
+def save_dashboard():
+    target = (S.get("dash-path") or "").strip()
+    if not target:
+        S.dash_msg = ("error", "Give the file a name.")
+        return
+    path = Path(target)
+    if not path.is_absolute():
+        path = DASHBOARDS / path
+    if path.suffix.lower() != ".json":
+        path = path.with_suffix(".json")
+    S.title = S.get("dash-title") or S.title
+    saved = D.save(to_dashboard(), path)
+    S.dash_saved = str(saved)
+    S.dash_msg = ("success", f"Saved {saved}")
+
+
+def open_saved():
+    name = S.get("dash-open")
+    if not name:
+        return
+    S["dash-open"] = None
+    try:
+        apply_dashboard(D.load(DASHBOARDS / name))
+        S.dash_saved = str(DASHBOARDS / name)
+        S.dash_msg = ("success", f"Opened {name}")
+    except Exception as exc:
+        S.dash_msg = ("error", f"Could not open {name}: {exc}")
+
+
+def open_uploaded():
+    up = S.get("dash-upload")
+    if up is None:
+        return
+    try:
+        import json as _json
+        raw = _json.loads(up.getvalue().decode("utf-8"))
+        # an uploaded JSON has no folder of its own: its paths are read from the dashboards folder
+        apply_dashboard(D.from_dict(raw, DASHBOARDS))
+        S.dash_msg = ("success", f"Opened {up.name}")
+    except Exception as exc:
+        S.dash_msg = ("error", f"Could not open {up.name}: {exc}")
+
+
+def switch_data_file(new_name: str, new_path: str):
+    """Keep the dashboard, read its data from another file (a missing file, or next month's)."""
+    old = S.source or {}
+    S.files[new_name] = new_path
+    sheets = list(sheets_of(new_name))
+    sheet = old.get("sheet") if old.get("sheet") in sheets else sheets[0]
+    if old:
+        S.schemas[source_key({"file": new_name, "sheet": sheet})] = S.schemas.get(source_key(old), {})
+    S.source = {"file": new_name, "sheet": sheet}
+    S.missing = [m for m in S.missing if m["role"] != "data"]
+    S.files = {k: v for k, v in S.files.items() if Path(v).exists()}   # forget files that are gone
+
+
+def replace_join_file(new_name: str, new_path: str):
+    S.files[new_name] = new_path
+    if S.join:
+        S.join["file"] = new_name
+    S.missing = [m for m in S.missing if m["role"] != "join"]
 
 
 # ================================================================ data (cached)
@@ -103,7 +287,7 @@ def prepared(path, mtime, sheet, schema_json, join_json, calcs_json):
 def current():
     """(df, kinds) for the chosen source, or (None, {})."""
     src = S.source
-    if not src or src["file"] not in S.files:
+    if not src or src["file"] not in S.files or not Path(S.files[src["file"]]).exists():
         return None, {}
     path = S.files[src["file"]]
     key = source_key(src)
@@ -112,7 +296,7 @@ def current():
     join = dict(S.join) if S.join else None
     if join:
         join["path"] = S.files.get(join["file"])
-        if not join["path"]:
+        if not join["path"] or not Path(join["path"]).exists():
             join = None
     return prepared(path, Path(path).stat().st_mtime, src["sheet"], json.dumps(S.schemas[key], ensure_ascii=False),
                     json.dumps(join, ensure_ascii=False), json.dumps(S.calcs, ensure_ascii=False))
@@ -359,6 +543,8 @@ def fresh_ids(spec):
 def sidebar(df, kinds):
     with st.sidebar:
         st.markdown("## 🔎 Filters")
+        if len(S.get("pages", [])) > 1:
+            st.caption(f"for the page **{cur_page().name}**")
         count_slot = st.empty()
         if df is None:
             st.info("Load data first (Data tab).")
@@ -413,15 +599,19 @@ def data_tab(df, kinds, filtered):
         st.markdown("#### 1. Files")
         ups = st.file_uploader("Excel or CSV files", type=["xlsx", "xls", "csv"], accept_multiple_files=True,
                                key="uploader", label_visibility="collapsed")
+        added = False
         for up in ups or []:
             if up.name not in S.files:
                 S.files[up.name] = store_upload(up)
+                added = True
                 if S.source is None:
                     S.source = {"file": up.name, "sheet": next(iter(sheets_of(up.name)))}
+        if added:
+            st.rerun()   # the page above was drawn before the file arrived
         st.button("Use the sample trade data", on_click=use_sample, disabled=SAMPLE.name in S.files)
-        if not S.files:
+        names = [n for n, path in S.files.items() if Path(path).exists()]   # a missing file is asked for above
+        if not names:
             return
-        names = list(S.files)
         cur = S.source or {"file": names[0], "sheet": None}
         a, b = st.columns(2)
         file = a.selectbox("File", names, index=names.index(cur["file"]) if cur["file"] in names else 0)
@@ -453,6 +643,12 @@ def data_tab(df, kinds, filtered):
             S.schemas[key] = new
             st.rerun()
 
+        with st.expander("🔄 Use a new file for this dashboard (next month's data)"):
+            st.caption("Same sheet and columns: every page, filter and visual stays as it is.")
+            new = st.file_uploader("New Excel / CSV", type=["xlsx", "xls", "csv"], key="refresh-upload")
+            if new is not None and st.button("Use this file", type="primary"):
+                switch_data_file(new.name, store_upload(new))
+                st.rerun()
         with st.expander("🔗 Join another sheet (add its columns)", expanded=bool(S.join)):
             join_panel(df)
         with st.expander("🧮 Calculated column", expanded=bool(S.calcs)):
@@ -473,7 +669,7 @@ def data_tab(df, kinds, filtered):
 
 
 def join_panel(df):
-    names = list(S.files)
+    names = [n for n, path in S.files.items() if Path(path).exists()]
     j = S.join or {}
     a, b = st.columns(2)
     file = a.selectbox("File", names, index=names.index(j["file"]) if j.get("file") in names else 0, key="join-file")
@@ -569,35 +765,59 @@ def add_suggested(spec_dict):
     S.selected = spec.id
 
 
+def all_specs() -> list:
+    return list(S.visuals) + list(S.kpis)
+
+
+def find_spec(vid):
+    return next((v for v in all_specs() if v.id == vid), None)
+
+
+def owner(vid) -> str:
+    return "kpis" if any(k.id == vid for k in S.kpis) else "visuals"
+
+
+def add_kpi():
+    df, kinds = current()
+    times = columns_of(kinds, df, ("date", "year"))
+    nums = columns_of(kinds, df, ("number",))
+    spec = V.VisualSpec("kpi", times[0] if times else None, nums[0] if nums else None)
+    S.kpis.append(spec)
+    S.selected = spec.id
+
+
 def select_visual(vid):
     S.selected = None if S.get("selected") == vid else vid
 
 
 def delete_visual(vid):
     S.visuals = [v for v in S.visuals if v.id != vid]
+    S.kpis = [v for v in S.kpis if v.id != vid]
     if S.get("selected") == vid:
         S.selected = None
 
 
 def duplicate_visual(vid):
-    i = next(i for i, v in enumerate(S.visuals) if v.id == vid)
-    copy = V.VisualSpec.from_dict(S.visuals[i].to_dict())
+    items = S[owner(vid)]
+    i = next(i for i, v in enumerate(items) if v.id == vid)
+    copy = V.VisualSpec.from_dict(items[i].to_dict())
     copy.id = V._new_id()
     for s in F.walk(copy.filters):
         s.id = F._new_id()
-    S.visuals.insert(i + 1, copy)
+    items.insert(i + 1, copy)
 
 
 def move_visual(vid, step):
-    i = next(i for i, v in enumerate(S.visuals) if v.id == vid)
+    items = S[owner(vid)]
+    i = next(i for i, v in enumerate(items) if v.id == vid)
     j = i + step
-    if 0 <= j < len(S.visuals):
-        S.visuals[i], S.visuals[j] = S.visuals[j], S.visuals[i]
+    if 0 <= j < len(items):
+        items[i], items[j] = items[j], items[i]
 
 
 def drill_into(vid, key):
     df, kinds = current()
-    spec = next(v for v in S.visuals if v.id == vid)
+    spec = find_spec(vid)
     value = S.get(key)
     if value:
         V.drill_down(F.apply_filters(df, S.page_filter), spec, kinds, value)
@@ -606,7 +826,7 @@ def drill_into(vid, key):
 
 def drill_up(vid):
     df, kinds = current()
-    spec = next(v for v in S.visuals if v.id == vid)
+    spec = find_spec(vid)
     V.drill_up(df, spec, kinds)
 
 
@@ -669,7 +889,7 @@ def select_from_picker(vid, key):
     """The '🎯 Select…' picker of donuts / treemaps: the same selection a click on a bar gives."""
     df, kinds = current()
     filtered = F.apply_filters(df, S.page_filter)
-    spec = next(v for v in S.visuals if v.id == vid)
+    spec = find_spec(vid)
     values = S.get(key) or []
     if not values:
         if S.selection and S.selection["visual"] == vid:
@@ -742,6 +962,27 @@ def visual_card(spec: V.VisualSpec, filtered, kinds):
                         on_select="rerun" if selectable else "ignore",
                         selection_mode=("points", "box", "lasso") if spec.type == "scatter" else ("points",),
                         config={"displaylogo": False})
+
+
+def kpi_card(spec: V.VisualSpec, filtered, kinds):
+    selected = S.get("selected") == spec.id
+    with st.container(border=True):
+        head = st.columns([5, 1, 1], vertical_alignment="center")
+        head[0].markdown(f"<span class='cs-muted'>{spec.title or V.auto_title(spec)}</span>", unsafe_allow_html=True)
+        head[1].button("", icon=":material/edit:", key=vkey(spec, "edit"), on_click=select_visual, args=(spec.id,),
+                       type="primary" if selected else "tertiary", help="Settings of this KPI")
+        head[2].button("", icon=":material/delete:", key=vkey(spec, "del"), on_click=delete_visual, args=(spec.id,),
+                       type="tertiary", help="Delete")
+        try:
+            table, meta = V.prepare(filtered, spec, kinds)
+        except Exception as exc:
+            st.info(str(exc))
+            return
+        fig = V.to_plotly(table, spec, meta, S.design, height=150, show_title=False)
+        fig.update_traces(title=None, selector=dict(type="indicator"))
+        fig.update_traces(number=dict(font=dict(size=34)), selector=dict(type="indicator"))
+        st.plotly_chart(fig, width="stretch", theme=None, key=f"{vkey(spec, 'kpi')}-{S.get('sel_gen', 0)}",
+                        config={"displayModeBar": False})
 
 
 def settings_panel(spec: V.VisualSpec, df, filtered, kinds):
@@ -835,6 +1076,22 @@ def settings_panel(spec: V.VisualSpec, df, filtered, kinds):
     st.button("Done", on_click=select_visual, args=(spec.id,), width="stretch")
 
 
+def pages_bar():
+    gen = S.get("pages_gen", 0)
+    row = st.columns([6, 1.1, 0.6, 0.6], vertical_alignment="center")
+    row[0].segmented_control("Page", [p.id for p in S.pages], default=S.page_id, key=f"page-pick-{gen}",
+                             format_func=lambda pid: next((p.name for p in S.pages if p.id == pid), pid),
+                             on_change=on_page_pick, label_visibility="collapsed")
+    row[1].button("＋ Page", on_click=add_page, help="A new page with its own filters and visuals", key="page-add",
+                  width="stretch")
+    with row[2].popover("", icon=":material/edit:", help="Rename this page"):
+        S.setdefault("page-rename", cur_page().name)
+        st.text_input("Page name", key="page-rename")
+        st.button("Rename", on_click=rename_page, key="page-rename-go")
+    row[3].button("", icon=":material/delete:", on_click=delete_page, disabled=len(S.pages) < 2,
+                  help="Delete this page", key="page-del")
+
+
 def report_tab(df, filtered, kinds):
     S.setdefault("visuals", [])
     S.setdefault("grid", 2)
@@ -844,12 +1101,14 @@ def report_tab(df, filtered, kinds):
     if S.selection and not any(v.id == S.selection["visual"] for v in S.visuals):
         S.selection = None
     process_clicks(filtered, kinds)
-    bar = st.columns([1.2, 1.4, 3, 1.6], vertical_alignment="center")
+    pages_bar()
+    bar = st.columns([1.2, 1, 1.4, 2, 1.6], vertical_alignment="center")
     bar[0].button("＋ Add visual", on_click=add_visual, type="primary", width="stretch")
-    if bar[1].button("✨ Suggest for me", width="stretch", help="Chart ideas for the filtered data (cv.suggest)"):
+    bar[1].button("＋ KPI", on_click=add_kpi, width="stretch", help="A headline number in the KPI row")
+    if bar[2].button("✨ Suggest for me", width="stretch", help="Chart ideas for the filtered data (cv.suggest)"):
         with st.spinner("Looking at the data…"):
             S.suggestions = [s.to_dict() for s in V.suggest(filtered.head(20000))]
-    S.grid = bar[3].segmented_control("Columns", [1, 2, 3], default=S.grid, key="grid-cols",
+    S.grid = bar[4].segmented_control("Columns", [1, 2, 3], default=S.grid, key=f"grid-cols-{S.page_id}",
                                       format_func=lambda n: f"{n} col", label_visibility="collapsed") or S.grid
     if S.get("suggestions"):
         with st.container(border=True):
@@ -864,8 +1123,8 @@ def report_tab(df, filtered, kinds):
                 cols[i % 4].button(f"{V.ICONS.get(sp.type, '')} {sp.title or V.auto_title(sp)}", key=f"sug-{i}",
                                    on_click=add_suggested, args=(sd,), width="stretch",
                                    help=f"{V.TYPES[sp.type]}: {sp.value or 'rows'} by {sp.category}")
-    if not S.visuals:
-        st.info("No visuals yet: click **＋ Add visual** or **✨ Suggest for me**.")
+    if not S.visuals and not S.kpis:
+        st.info("No visuals yet: click **＋ Add visual**, **＋ KPI** or **✨ Suggest for me**.")
         return
     sel_row = st.columns([5, 1.3, 1.7], vertical_alignment="center")
     if S.selection:
@@ -880,9 +1139,14 @@ def report_tab(df, filtered, kinds):
     sel_row[2].toggle("Click drills down", key="click_drill",
                       help="On: clicking a bar of a chart with levels (Year › Quarter › Month, Region › Country) "
                            "opens it instead of filtering the other visuals")
-    selected = next((v for v in S.visuals if v.id == S.get("selected")), None)
+    selected = find_spec(S.get("selected"))
     canvas, panel = (st.columns([2.6, 1.15], gap="medium") if selected else (st.container(), None))
     with canvas:
+        if S.kpis:
+            row = st.columns(len(S.kpis), gap="small")
+            for col, spec in zip(row, S.kpis):
+                with col:
+                    kpi_card(spec, data_for(spec, filtered), kinds)
         n = max(1, S.grid - 1) if selected else S.grid     # the settings panel takes room: one column less
         grid = st.columns(n, gap="small")
         for i, spec in enumerate(S.visuals):
@@ -906,12 +1170,57 @@ def chips(df):
         st.button("Reset all", key="chip-reset", on_click=reset_all, type="tertiary")
 
 
+def dashboard_menu():
+    with st.popover("💾 Dashboard", width="stretch"):
+        S.setdefault("dash-title", S.title)
+        st.text_input("Title", key="dash-title")
+        slug = "".join(ch if ch.isalnum() or ch in "-_ " else "" for ch in S.get("dash-title") or "dashboard").strip()
+        S.setdefault("dash-path", f"{slug.replace(' ', '_') or 'dashboard'}.json")
+        st.text_input("Save as", key="dash-path", help=f"A name (saved in {DASHBOARDS}) or a full path. Data file "
+                                                       "paths are stored relative to this file.")
+        st.button("Save", on_click=save_dashboard, type="primary", width="stretch", disabled=S.source is None)
+        if S.get("dash_saved") and Path(S.dash_saved).exists():
+            st.download_button("⬇ Download the JSON", Path(S.dash_saved).read_bytes(), file_name=Path(S.dash_saved).name,
+                               mime="application/json", width="stretch")
+        st.divider()
+        saved = sorted(p.name for p in DASHBOARDS.glob("*.json")) if DASHBOARDS.exists() else []
+        if saved:
+            st.selectbox("Open a saved dashboard", saved, index=None, key="dash-open", on_change=open_saved,
+                         placeholder="Choose one to open it…")
+        st.file_uploader("…or open a dashboard file", type=["json"], key="dash-upload", on_change=open_uploaded)
+    msg = S.pop("dash_msg", None)
+    if msg:
+        if msg[0] == "success":
+            st.toast(msg[1], icon="✅")
+        else:
+            st.error(msg[1])
+
+
+def missing_panel():
+    """A loaded dashboard whose data file is not where it was: ask for it."""
+    for m in list(S.missing):
+        with st.container(border=True):
+            what = "data file" if m["role"] == "data" else "file of the joined sheet"
+            st.warning(f"The {what} **{m['name']}** was not found (expected at `{m['path']}`). "
+                       "Upload it, or next month's file with the same layout, to show the dashboard.")
+            up = st.file_uploader(f"Upload {m['name']}", type=["xlsx", "xls", "csv"], key=f"missing-{m['role']}")
+            if up is not None:
+                path = store_upload(up)
+                (switch_data_file if m["role"] == "data" else replace_join_file)(up.name, path)
+                st.rerun()
+
+
 def main():
+    ensure_pages()
+    store_page()
     df, kinds = current()
     count_slot = sidebar(df, kinds)
-    head, design = st.columns([4, 1.2])
-    head.markdown("# 📊 Chamber Studio")
+    head, design, menu = st.columns([4, 1.2, 1.1], vertical_alignment="bottom")
+    head.markdown(f"# 📊 {S.title}")
     design.selectbox("Design", cv.list_designs(), key="design", help="Colours of the charts (same as the exports)")
+    with menu:
+        dashboard_menu()
+    missing_panel()
     filtered = df
     error = None
     if df is not None:
