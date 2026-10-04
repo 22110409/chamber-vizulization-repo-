@@ -221,6 +221,7 @@ def lineplot(data=None, series=None, *, x=None, y=None, colors=None, area=None,
     if ylabel and k > 1:
         ax.set_ylabel(shape(ylabel), fontproperties=font("sans", "bold", ylabel),
                       fontsize=fr.fs(14), color=d.text_color, labelpad=10 * s)
+    ends = []
     for j, nm in enumerate(names):
         ys = np.array(ser[nm], dtype=float)
         px, py = pos, ys
@@ -265,8 +266,20 @@ def lineplot(data=None, series=None, *, x=None, y=None, colors=None, area=None,
             txt = nm
             if show_change and ys[0]:
                 txt += f"  {((ys[-1] - ys[0]) / abs(ys[0]) * 100):+.1f}%"
-            ax.annotate(shape(txt), (pos[-1], ys[-1]), xytext=(14 * s, 0), textcoords="offset points",
-                        va="center", ha="left", fontsize=fr.fs(12.5),
+            ends.append((ys[-1], txt, nm, c))
+    # end labels: pushed apart so lines that finish close together stay readable
+    if ends:
+        gap = fr.fs(12.5) * 1.45
+        to_pt = lambda y: ax.transData.transform((pos[-1], y))[1] * 72 / fr.fig.dpi  # noqa: E731
+        order = sorted(range(len(ends)), key=lambda i: to_pt(ends[i][0]))
+        placed = [to_pt(ends[i][0]) for i in order]
+        for i in range(1, len(placed)):
+            placed[i] = max(placed[i], placed[i - 1] + gap)
+        shift = max(0.0, placed[-1] - to_pt(ax.get_ylim()[1]))   # keep the top one inside the axes
+        for i, want in zip(order, placed):
+            y, txt, nm, c = ends[i]
+            ax.annotate(shape(txt), (pos[-1], y), xytext=(14 * s, want - shift - to_pt(y)),
+                        textcoords="offset points", va="center", ha="left", fontsize=fr.fs(12.5),
                         fontproperties=font("sans", "bold", nm), color=c, annotation_clip=False)
     if show_change and k == 1 and n > 1 and ser[names[0]][0]:
         ys = ser[names[0]]

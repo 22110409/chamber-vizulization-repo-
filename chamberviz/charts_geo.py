@@ -28,6 +28,9 @@ REGIONS = {
     "asia": (25, 150, -12, 60),
     "africa": (-20, 55, -36, 38),
     "americas": (-170, -30, -56, 75),
+    "north_america": (-168, -52, 13, 72),       # Canada, USA, Mexico
+    "south_america": (-92, -32, -56, 13),
+    "latin_america": (-118, -32, -56, 33),      # Mexico, Central and South America, the Caribbean
 }
 
 
@@ -105,19 +108,85 @@ def _map_axes(fr, box, bottom=0.25, right=0.3):
     return ax, box
 
 
+FLOOR = 0.18   # where the colour scale starts for the smallest value (0 is the plain land colour)
+
+
+def _make_room_left(fr, ax, box, panel_in):
+    """Shift the map right to free panel_in inches on the left (Arabic: the list is on the left)."""
+    bb = ax.get_position()
+    ax.set_position([bb.x0 + panel_in / fr.W, bb.y0, bb.width - panel_in / fr.W, bb.height])
+    box = _fit_box(box, (bb.width * fr.W - panel_in), bb.height * fr.H)
+    ax.set_xlim(box[0], box[1])
+    ax.set_ylim(box[2], box[3])
+    return box
+
+
+def _ranking_panel(fr, ax, items, vf, arabic, panel_in, show_flags, col):
+    """A ranked list beside the map: number, flag, name, value and a bar. items = [(name, value, iso2)]."""
+    from matplotlib.patches import FancyBboxPatch
+    d, s = fr.design, fr.s
+    if not items:
+        return
+    vmax = max(v for _, v, _ in items) or 1
+    bb = ax.get_position()
+    n = len(items)
+    row = min(0.46 * s, (bb.height * fr.H - 0.2 * s) / max(n, 1))
+    top_y = bb.y0 + bb.height / 2 + row * n / 2 / fr.H
+    px0 = (bb.x0 + bb.width) * fr.W + 0.35 * s if not arabic else 0.35 * s
+    px1 = px0 + panel_in - 0.5 * s
+    fsz = fr.fs(12.5 if row > 0.4 * s else 11)
+    for k, (name, v, iso) in enumerate(items):
+        yc = top_y - (k + 0.5) * row / fr.H
+        img = get_flag(iso, "round") if show_flags else None
+        fl_in = min(0.3 * s, row * 0.7)
+        if not arabic:
+            x = px0
+            fr.fig.text(x / fr.W, yc, f"{k + 1}", ha="left", va="center", fontsize=fsz * 0.9,
+                        fontproperties=font("sans", "bold"), color=d.muted_color)
+            x += 0.3 * s
+            if img is not None:
+                place_image(ax, img, (x + fl_in / 2) / fr.W, yc, fl_in)
+            x += fl_in + 0.12 * s
+            fr.fig.text(x / fr.W, yc + row * 0.12 / fr.H, shape(name), ha="left", va="center",
+                        fontsize=fsz, fontproperties=font("sans", "regular", name), color=d.text_color)
+            fr.fig.text(px1 / fr.W, yc + row * 0.12 / fr.H, vf(v), ha="right", va="center", fontsize=fsz,
+                        fontproperties=font("sans", "bold"), color=d.value_color)
+            bx0, bw = x, (px1 - x) * v / vmax
+        else:
+            x = px1
+            fr.fig.text(x / fr.W, yc, f"{k + 1}", ha="right", va="center", fontsize=fsz * 0.9,
+                        fontproperties=font("sans", "bold"), color=d.muted_color)
+            x -= 0.3 * s
+            if img is not None:
+                place_image(ax, img, (x - fl_in / 2) / fr.W, yc, fl_in)
+            x -= fl_in + 0.12 * s
+            fr.fig.text(x / fr.W, yc + row * 0.12 / fr.H, shape(name), ha="right", va="center",
+                        fontsize=fsz, fontproperties=font("sans", "bold", name), color=d.text_color)
+            fr.fig.text(px0 / fr.W, yc + row * 0.12 / fr.H, vf(v), ha="left", va="center", fontsize=fsz,
+                        fontproperties=font("sans", "bold"), color=d.value_color)
+            bw = (x - px0) * v / vmax
+            bx0 = x - bw
+        fr.fig.add_artist(FancyBboxPatch((bx0 / fr.W, yc - row * 0.3 / fr.H), bw / fr.W, 0.045 * s / fr.H,
+                                         boxstyle="square,pad=0", transform=fr.fig.transFigure,
+                                         facecolor=col, edgecolor="none", alpha=0.85))
+
+
 def _halo(fr, color):
     return [patheffects.withStroke(linewidth=3.2 * fr.s, foreground=color)]
 
 
 def geoplot(data=None, values=None, *, x=None, y=None, region="auto", style="choropleth",
             label_top=8, show_flags=True, scale="linear", colors=None, highlight=None,
-            legend_title=None, bubble_color=None, **kw):
+            legend_title=None, bubble_color=None, ranking=False, ranking_top=10, **kw):
     """World or regional map coloured by value per country.
 
     geoplot(["Saudi Arabia", "China", "USA"], [2975, 4180, 1692], region="world")
     style  : "choropleth" (fill countries) or "bubbles" (circles sized by value)
     region : "auto", "world", "middle_east", "mena", "arab_world", "gcc", "levant",
-             "europe", "asia", "africa", "americas" or (lon_min, lon_max, lat_min, lat_max)
+             "europe", "asia", "africa", "americas", "north_america", "south_america",
+             "latin_america" or (lon_min, lon_max, lat_min, lat_max)
+    ranking: also list the top countries (flag, name, value, bar) beside the map; good for tall
+             regions such as South America that leave room at the sides
     """
     opts = {k: kw.pop(k) for k in list(kw) if k in VALUE_OPTS}
     kw.setdefault("background_map", False)
@@ -137,13 +206,17 @@ def geoplot(data=None, values=None, *, x=None, y=None, region="auto", style="cho
         warnings.warn(f"geoplot: could not match these to countries: {missing}")
     vf = _vfmt(opts, v2)
     box = _region_box(region, codes)
-    ax, box = _map_axes(fr, box, bottom=0.55)
+    arabic = any(has_arabic(l) for l in labels)
+    panel_in = 3.6 * s if ranking else 0
+    ax, box = _map_axes(fr, box, bottom=0.55, right=(0.3 + panel_in / s) if ranking and not arabic else 0.3)
+    if ranking and arabic:  # the list goes on the left for Arabic
+        box = _make_room_left(fr, ax, box, panel_in)
     cmap = LinearSegmentedColormap.from_list("seq", list(colors or d.sequential))
     vmin, vmax = min(v2), max(v2)
     norm = LogNorm(max(vmin, 1e-9), vmax) if scale == "log" else Normalize(min(0, vmin), vmax)
     fills = {}
-    if style == "choropleth":
-        fills = {c: cmap(norm(v)) for c, v in zip(codes, v2)}
+    if style == "choropleth":  # every country with data gets a visible colour, never the "no data" one
+        fills = {c: cmap(FLOOR + (1 - FLOOR) * float(np.clip(norm(v), 0, 1))) for c, v in zip(codes, v2)}
     hl = country_code(highlight) if highlight else None
     if hl:
         fills[hl] = d.accent
@@ -161,7 +234,6 @@ def geoplot(data=None, values=None, *, x=None, y=None, region="auto", style="cho
     # labels on the biggest countries (skipped when they would overlap)
     from ._draw import LabelPlacer
     lp = LabelPlacer(fr.fig)
-    arabic = any(has_arabic(l) for l in labels)
     fsz = 0.26 * s
     for rank, i in enumerate(order[:label_top]):
         info = country_info(codes[i])
@@ -189,8 +261,8 @@ def geoplot(data=None, values=None, *, x=None, y=None, region="auto", style="cho
         bb = ax.get_position()
         cax = fr.fig.add_axes([bb.x0 + bb.width * 0.02, (fr.footer_h + 0.28 * s) / fr.H,
                                min(0.25, 3.2 * s / fr.W), 0.012 * s * 16 / fr.H * 0.6])
-        grad = np.linspace(0, 1, 256).reshape(1, -1)
-        cax.imshow(grad, aspect="auto", cmap=cmap)
+        grad = np.linspace(FLOOR, 1, 256).reshape(1, -1)
+        cax.imshow(grad, aspect="auto", cmap=cmap, vmin=0, vmax=1)
         cax.set_xticks([0, 255])
         cax.set_xticklabels([vf(norm.vmin), vf(vmax)])
         cax.set_yticks([])
@@ -200,6 +272,9 @@ def geoplot(data=None, values=None, *, x=None, y=None, region="auto", style="cho
         if legend_title:
             cax.set_title(shape(legend_title), fontproperties=font("sans", "bold", legend_title),
                           fontsize=fr.fs(11), color=d.text_color, loc="left", pad=4)
+    if ranking:
+        items = [(names2[i], v2[i], codes[i]) for i in order[:ranking_top]]
+        _ranking_panel(fr, ax, items, vf, arabic, panel_in, show_flags, d.accent)
     return fr.finish()
 
 
@@ -243,11 +318,7 @@ def flowmap(data=None, values=None, *, x=None, y=None, hub="Jordan", direction="
     box = _region_box(region, [p[2]["iso2"] for p in pairs] + [hub_info["iso2"]])
     ax, box = _map_axes(fr, box, right=(0.3 + panel_in / s) if not arabic else 0.3)
     if ranking and arabic:  # panel on the left for Arabic
-        bb = ax.get_position()
-        ax.set_position([bb.x0 + panel_in / fr.W, bb.y0, bb.width - panel_in / fr.W, bb.height])
-        box = _fit_box(box, (bb.width * fr.W - panel_in), bb.height * fr.H)
-        ax.set_xlim(box[0], box[1])
-        ax.set_ylim(box[2], box[3])
+        box = _make_room_left(fr, ax, box, panel_in)
     _base_map(fr, ax, box, d.land_color, d.border_color, {hub_info["iso2"]: d.accent})
     hp = (hub_info["lon"], hub_info["lat"])
     vmax = max(p[1] for p in pairs)
@@ -286,48 +357,6 @@ def flowmap(data=None, values=None, *, x=None, y=None, hub="Jordan", direction="
             lp.try_text(t, [((8 * s, 0), "left", "center"), ((-8 * s, 0), "right", "center"),
                             ((0, 9 * s), "center", "bottom"), ((0, -9 * s), "center", "top")])
         return fr.finish()
-    # ranked side panel
-    bb = ax.get_position()
-    n = len(pairs)
-    row = min(0.46 * s, (bb.height * fr.H - 0.2 * s) / max(n, 1))
-    top_y = bb.y0 + bb.height / 2 + row * n / 2 / fr.H
-    px0 = (bb.x0 + bb.width) * fr.W + 0.35 * s if not arabic else 0.35 * s + fr.margin * 0
-    px1 = px0 + panel_in - 0.5 * s
-    fsz = fr.fs(12.5 if row > 0.4 * s else 11)
-    from matplotlib.patches import FancyBboxPatch
-    for k, (l, v, info) in enumerate(pairs):
-        yc = top_y - (k + 0.5) * row / fr.H
-        name = l  # keep the user's own spelling in the list
-        img = get_flag(info["iso2"], "round") if show_flags else None
-        fl_in = min(0.3 * s, row * 0.7)
-        if not arabic:
-            x = px0
-            fr.fig.text(x / fr.W, yc, f"{k + 1}", ha="left", va="center", fontsize=fsz * 0.9,
-                        fontproperties=font("sans", "bold"), color=d.muted_color)
-            x += 0.3 * s
-            if img is not None:
-                place_image(ax, img, (x + fl_in / 2) / fr.W, yc, fl_in)
-            x += fl_in + 0.12 * s
-            fr.fig.text(x / fr.W, yc + row * 0.12 / fr.H, shape(name), ha="left", va="center",
-                        fontsize=fsz, fontproperties=font("sans", "regular", name), color=d.text_color)
-            fr.fig.text(px1 / fr.W, yc + row * 0.12 / fr.H, vf(v), ha="right", va="center", fontsize=fsz,
-                        fontproperties=font("sans", "bold"), color=d.value_color)
-            bx0, bw = x, (px1 - x) * v / vmax
-        else:
-            x = px1
-            fr.fig.text(x / fr.W, yc, f"{k + 1}", ha="right", va="center", fontsize=fsz * 0.9,
-                        fontproperties=font("sans", "bold"), color=d.muted_color)
-            x -= 0.3 * s
-            if img is not None:
-                place_image(ax, img, (x - fl_in / 2) / fr.W, yc, fl_in)
-            x -= fl_in + 0.12 * s
-            fr.fig.text(x / fr.W, yc + row * 0.12 / fr.H, shape(name), ha="right", va="center",
-                        fontsize=fsz, fontproperties=font("sans", "bold", name), color=d.text_color)
-            fr.fig.text(px0 / fr.W, yc + row * 0.12 / fr.H, vf(v), ha="left", va="center", fontsize=fsz,
-                        fontproperties=font("sans", "bold"), color=d.value_color)
-            bw = (x - px0) * v / vmax
-            bx0 = x - bw
-        fr.fig.add_artist(FancyBboxPatch((bx0 / fr.W, yc - row * 0.3 / fr.H), bw / fr.W, 0.045 * s / fr.H,
-                                         boxstyle="square,pad=0", transform=fr.fig.transFigure,
-                                         facecolor=col, edgecolor="none", alpha=0.85))
+    _ranking_panel(fr, ax, [(l, v, info["iso2"]) for l, v, info in pairs], vf, arabic, panel_in,
+                   show_flags, col)
     return fr.finish()
