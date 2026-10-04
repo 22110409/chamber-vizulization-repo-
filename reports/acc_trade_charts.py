@@ -47,6 +47,9 @@ MILLION = 1e6                   # the data is in JD: charts show JD million
 SIZE = (12, 6.75)
 DPI = 160
 FOCUS = ["الأسمدة", "الألبسة وتوابعها", "محضرات الصيدلة", "الوقود والزيوت المعدنية"]   # section 8
+LOGO = HERE / "assets" / "acc_logo.png"   # Amman Chamber of Commerce; None = no logo
+LOGO_CORNER = "top-right"                 # top-left, top-right, bottom-left or bottom-right
+LOGO_SIZE = 0.12                          # logo height as a share of the chart height
 
 # Arabic names the country list does not know -> ISO code
 COUNTRY_FIX = {"تشيكو": "CZ", "قازخستان": "KZ", "الدومنيكان": "DO", "جامبيا": "GM", "قرغيرستان": "KG",
@@ -286,6 +289,29 @@ class Trade:
     def by_goods(self, flow, year, lang) -> pd.Series:
         s = self.rows(year, flow=flow).groupby(f"goods_{lang}")["value"].sum()
         return s[s > 0].sort_values(ascending=False)
+
+
+def logo_for(design: str, out: Path):
+    """The logo for a design: as it is on light backgrounds; on a white rounded card on dark ones,
+    where the navy lettering would disappear."""
+    if not LOGO or not Path(LOGO).exists():
+        return None
+    r, g, b = (int(cv.get_design(design).surface.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
+    dark = 0.299 * r + 0.587 * g + 0.114 * b < 150
+    path = out / "_logo" / ("acc_logo_card.png" if dark else "acc_logo.png")
+    if not path.exists() or path.stat().st_mtime < Path(LOGO).stat().st_mtime:
+        from PIL import Image, ImageDraw
+        im = Image.open(LOGO).convert("RGBA")
+        im = im.crop(im.getbbox())                    # no empty margins: the logo uses its full height
+        if dark:
+            pad = int(im.height * 0.12)
+            bg = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
+            ImageDraw.Draw(bg).rounded_rectangle([0, 0, bg.width - 1, bg.height - 1], radius=pad, fill="white")
+            bg.alpha_composite(im, (pad, pad))
+            im = bg
+        path.parent.mkdir(parents=True, exist_ok=True)
+        im.save(path)
+    return str(path)
 
 
 def cname(iso, lang) -> str:
@@ -912,7 +938,8 @@ def main(argv=None):
         for design in args.designs:
             folder = out / lang / design
             folder.mkdir(parents=True, exist_ok=True)
-            style = dict(design=design, figure_size=SIZE, logo=None)
+            logo = logo_for(design, out)
+            style = dict(design=design, figure_size=SIZE, logo=logo, logo_alignment=LOGO_CORNER, logo_size=LOGO_SIZE)
             # the PDF holds every chart, so a run with --only leaves the existing PDF alone
             pdf = None if args.only else PdfPages(folder / f"acc_trade_charts_{lang}_{design}.pdf")
             for section, slug, *_, fn in todo:
