@@ -47,7 +47,7 @@ MILLION = 1e6                   # the data is in JD: charts show JD million
 SIZE = (12, 6.75)
 DPI = 160
 FOCUS = ["الأسمدة", "الألبسة وتوابعها", "محضرات الصيدلة", "الوقود والزيوت المعدنية"]   # section 8
-LOGO = HERE / "assets" / "acc_logo.png"   # Amman Chamber of Commerce; None = no logo
+LOGO = HERE / "assets" / "acc_logo_white.png"   # Amman Chamber of Commerce; None = no logo
 LOGO_CORNER = "top-right"                 # top-left, top-right, bottom-left or bottom-right
 LOGO_SIZE = 0.12                          # logo height as a share of the chart height
 
@@ -292,17 +292,21 @@ class Trade:
 
 
 def logo_for(design: str, out: Path):
-    """The logo for a design: as it is on light backgrounds; on a white rounded card on dark ones,
-    where the navy lettering would disappear."""
+    """The logo for a design, trimmed of empty margins (white or transparent): as it is on light
+    backgrounds; on a white rounded card on dark ones, where the navy lettering would disappear."""
     if not LOGO or not Path(LOGO).exists():
         return None
     r, g, b = (int(cv.get_design(design).surface.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
     dark = 0.299 * r + 0.587 * g + 0.114 * b < 150
     path = out / "_logo" / ("acc_logo_card.png" if dark else "acc_logo.png")
     if not path.exists() or path.stat().st_mtime < Path(LOGO).stat().st_mtime:
+        import numpy as np
         from PIL import Image, ImageDraw
         im = Image.open(LOGO).convert("RGBA")
-        im = im.crop(im.getbbox())                    # no empty margins: the logo uses its full height
+        px = np.asarray(im)
+        ink = (px[..., 3] > 20) & (px[..., :3].min(axis=2) < 235)   # neither transparent nor white
+        rows, cols = np.where(ink)
+        im = im.crop((cols.min(), rows.min(), cols.max() + 1, rows.max() + 1))
         if dark:
             pad = int(im.height * 0.12)
             bg = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
